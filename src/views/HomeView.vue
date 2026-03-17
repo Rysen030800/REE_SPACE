@@ -73,7 +73,7 @@ function resetTypewriter() {
 
 function tick() {
   const words = currentWords()
-  const word = words[wordIndex]
+  const word = words[wordIndex]!
 
   if (!deleting) {
     charIndex = Math.min(charIndex + 1, word.length)
@@ -105,7 +105,7 @@ function tick() {
 function startTypewriter() {
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
   if (reduced) {
-    typedWord.value = currentWords()[0]
+    typedWord.value = currentWords()[0] ?? ''
     return
   }
 
