@@ -96,7 +96,12 @@ function closeMobileMenu() {
             {{ langButtonText }}
           </button>
 
-          <a class="nav-action resume" href="/resume.pdf" download>{{ text.nav.resume }}</a>
+          <a class="nav-action resume-icon" href="/resume.pdf" :aria-label="text.nav.resume" :title="text.nav.resume" download>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path fill="none" stroke="currentColor" stroke-width="2" d="M7 3h7l5 5v13H7z" />
+              <path fill="none" stroke="currentColor" stroke-width="2" d="M14 3v5h5M9 13h8M9 17h8" />
+            </svg>
+          </a>
         </div>
 
         <div class="nav-controls mobile-tools">
@@ -295,6 +300,15 @@ function closeMobileMenu() {
   line-height: 1.1;
   font: inherit;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.resume-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .nav-icon {

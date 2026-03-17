@@ -275,24 +275,36 @@ onBeforeUnmount(() => {
 
 .typed-word {
   font-weight: 800;
-  color: #f5a92f;
+  color: #ffd84d;
+  text-shadow:
+    0 0 8px rgba(255, 216, 77, 0.55),
+    0 0 18px rgba(255, 216, 77, 0.35);
 }
 
 :root[data-theme='dark'] .typed-word {
-  color: #2f3cf5;
+  color: #4be7ff;
+  text-shadow:
+    0 0 10px rgba(75, 231, 255, 0.65),
+    0 0 22px rgba(75, 231, 255, 0.4);
 }
 
 .typed::after {
   content: '|';
   display: inline-block;
   margin-left: 0.06em;
-  color: #f5a92f;
+  color: #ffd84d;
+  text-shadow:
+    0 0 8px rgba(255, 216, 77, 0.45),
+    0 0 18px rgba(255, 216, 77, 0.3);
   line-height: 1;
   animation: blink 1s steps(1) infinite;
 }
 
 :root[data-theme='dark'] .typed::after {
-  color: #2f3cf5;
+  color: #4be7ff;
+  text-shadow:
+    0 0 10px rgba(75, 231, 255, 0.6),
+    0 0 20px rgba(75, 231, 255, 0.35);
 }
 
 .statement {
