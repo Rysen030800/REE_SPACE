@@ -14,8 +14,12 @@ const themeAriaLabel = computed(() => (ui.theme === 'light' ? 'Switch to dark mo
 const langAriaLabel = computed(() => 'Switch language')
 const menuAriaLabel = computed(() => 'Toggle menu')
 
-const themeName = computed(() => (ui.theme === 'light' ? '白天' : '黑夜'))
+const themeName = computed(() => {
+  if (ui.lang === 'zh') return ui.theme === 'light' ? '白天' : '黑夜'
+  return ui.theme === 'light' ? 'Light' : 'Dark'
+})
 const langName = computed(() => (ui.lang === 'zh' ? '中文' : 'EN'))
+const resumeName = computed(() => (ui.lang === 'zh' ? '简历' : 'Resume'))
 
 const mobileMenuOpen = ref(false)
 
@@ -146,7 +150,7 @@ function closeMobileMenu() {
                 <path fill="none" stroke="currentColor" stroke-width="2" d="M14 3v5h5M9 13h8M9 17h8" />
               </svg>
             </span>
-            <span class="tool-label">简历</span>
+            <span class="tool-label">{{ resumeName }}</span>
           </a>
         </div>
       </nav>
@@ -381,7 +385,9 @@ function closeMobileMenu() {
     display: block;
     border: 1px solid var(--color-border);
     border-top: 0;
-    background: var(--color-background);
+    background: rgba(90, 90, 96, 0.36);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
     padding: 0.95rem 1rem 0.85rem;
     max-height: 0;
     opacity: 0;
