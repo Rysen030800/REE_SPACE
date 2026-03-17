@@ -1,0 +1,9 @@
+Put your resume PDF here:
+
+1) Export your resume as PDF
+2) Rename it to: resume.pdf
+3) Copy it to: REE_SPACE/public/resume.pdf
+
+Then the site download links will work:
+- /resume.pdf
+
