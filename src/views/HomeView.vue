@@ -340,15 +340,20 @@ onBeforeUnmount(() => {
 @media (max-width: 960px) {
   .hero {
     min-height: auto;
-    padding: 2.5rem 0 2rem;
+    padding: 0 0 1.7rem;
   }
 
   .hero-layout {
     grid-template-columns: 1fr;
+    position: relative;
+    gap: 0;
   }
 
   .hero-left {
     max-width: 100%;
+    margin-top: clamp(120px, 28vw, 190px);
+    position: relative;
+    z-index: 2;
   }
 
   .title {
@@ -375,24 +380,30 @@ onBeforeUnmount(() => {
   }
 
   .hero-art {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 0;
     right: auto;
-    top: auto;
-    transform: none;
-    width: min(100%, 540px);
-    margin: 0.95rem auto 0;
-    aspect-ratio: 16 / 11;
-    opacity: 0.9;
+    transform: translateX(-50%);
+    width: min(760px, 140vw);
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    opacity: 0.88;
+    z-index: 1;
   }
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding: 1.5rem 0 1.4rem;
+    padding: 0 0 1.3rem;
   }
 
   .kicker {
     font-size: 1rem;
+  }
+
+  .hero-left {
+    margin-top: clamp(105px, 30vw, 165px);
   }
 
   .title {
@@ -414,20 +425,23 @@ onBeforeUnmount(() => {
   }
 
   .hero-art {
-    width: min(100%, 500px);
-    margin-top: 0.65rem;
-    aspect-ratio: 3 / 2;
-    opacity: 0.86;
+    width: min(640px, 155vw);
+    aspect-ratio: 4 / 3;
+    opacity: 0.84;
   }
 }
 
 @media (max-width: 420px) {
   .hero {
-    padding: 1.25rem 0 1.15rem;
+    padding: 0 0 1.05rem;
   }
 
   .title {
     font-size: clamp(1.8rem, 12.5vw, 2.35rem);
+  }
+
+  .hero-left {
+    margin-top: clamp(95px, 31vw, 145px);
   }
 
   .intro {
@@ -444,6 +458,11 @@ onBeforeUnmount(() => {
 
   .subtitle {
     font-size: 0.92rem;
+  }
+
+  .hero-art {
+    width: min(590px, 170vw);
+    opacity: 0.82;
   }
 }
 </style>
