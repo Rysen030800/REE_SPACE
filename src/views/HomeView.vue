@@ -275,36 +275,36 @@ onBeforeUnmount(() => {
 
 .typed-word {
   font-weight: 800;
-  color: #ffd84d;
+  color: #ff5d00;
   text-shadow:
-    0 0 8px rgba(255, 216, 77, 0.55),
-    0 0 18px rgba(255, 216, 77, 0.35);
+    0 0 8px rgba(255, 93, 0, 0.6),
+    0 0 18px rgba(255, 93, 0, 0.4);
 }
 
 :root[data-theme='dark'] .typed-word {
-  color: #4be7ff;
+  color: #6947ff;
   text-shadow:
-    0 0 10px rgba(75, 231, 255, 0.65),
-    0 0 22px rgba(75, 231, 255, 0.4);
+    0 0 10px rgba(105, 71, 255, 0.68),
+    0 0 22px rgba(105, 71, 255, 0.42);
 }
 
 .typed::after {
   content: '|';
   display: inline-block;
   margin-left: 0.06em;
-  color: #ffd84d;
+  color: #ff5d00;
   text-shadow:
-    0 0 8px rgba(255, 216, 77, 0.45),
-    0 0 18px rgba(255, 216, 77, 0.3);
+    0 0 8px rgba(255, 93, 0, 0.5),
+    0 0 18px rgba(255, 93, 0, 0.35);
   line-height: 1;
   animation: blink 1s steps(1) infinite;
 }
 
 :root[data-theme='dark'] .typed::after {
-  color: #4be7ff;
+  color: #6947ff;
   text-shadow:
-    0 0 10px rgba(75, 231, 255, 0.6),
-    0 0 20px rgba(75, 231, 255, 0.35);
+    0 0 10px rgba(105, 71, 255, 0.62),
+    0 0 20px rgba(105, 71, 255, 0.38);
 }
 
 .statement {
