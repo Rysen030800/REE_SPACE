@@ -385,9 +385,11 @@ function closeMobileMenu() {
     display: block;
     border: 1px solid var(--color-border);
     border-top: 0;
-    background: rgba(90, 90, 96, 0.36);
-    backdrop-filter: blur(14px) saturate(120%);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    background: rgba(78, 78, 84, 0.58);
+    backdrop-filter: blur(20px) saturate(138%);
+    -webkit-backdrop-filter: blur(20px) saturate(138%);
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
     padding: 0.95rem 1rem 0.85rem;
     max-height: 0;
     opacity: 0;
