@@ -96,7 +96,7 @@ function pickOpt(value: { zh: string; en: string } | undefined) {
 }
 
 .card {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);
@@ -146,7 +146,7 @@ function pickOpt(value: { zh: string; en: string } | undefined) {
 }
 
 .fav-card {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);

@@ -62,21 +62,37 @@ function pick(value: { zh: string; en: string }) {
 }
 
 .card {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
-  padding: 1rem;
+  padding: 1rem 1rem 1.05rem;
   background: var(--color-background-soft);
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(220px, 28vw, 264px);
 }
 
 .title {
   margin: 0 0 0.35rem;
-  font-size: 1.1rem;
+  font-size: clamp(1.03rem, 1.2vw, 1.1rem);
+  line-height: 1.34;
   color: var(--color-heading);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.34em * 2);
 }
 
 .desc {
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.52;
+  font-size: clamp(0.95rem, 1.04vw, 1rem);
   opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.52em * 4);
 }
 
 .tags {
@@ -85,7 +101,7 @@ function pick(value: { zh: string; en: string }) {
   flex-wrap: wrap;
   gap: 0.4rem;
   padding: 0;
-  margin: 0;
+  margin: auto 0 0.15rem;
 }
 
 .tag {

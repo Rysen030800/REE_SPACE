@@ -55,7 +55,7 @@ const text = computed(() => copy[ui.lang])
 }
 
 .card {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);

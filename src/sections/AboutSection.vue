@@ -103,7 +103,7 @@ const text = computed(() => copy[ui.lang])
 }
 
 .item {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
@@ -130,7 +130,7 @@ const text = computed(() => copy[ui.lang])
 }
 
 .skill {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--section-card-border);
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
@@ -149,7 +149,7 @@ const text = computed(() => copy[ui.lang])
 }
 
 .resume {
-  border: 1px dashed var(--color-border);
+  border: 1px dashed var(--section-card-border);
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
@@ -164,4 +164,3 @@ const text = computed(() => copy[ui.lang])
   background: var(--color-background);
 }
 </style>
-
