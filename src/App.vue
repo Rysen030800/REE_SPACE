@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { computed } from 'vue'
+﻿<script setup lang="ts">
+import { computed, ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { copy } from './i18n'
 import { useUiStore } from './stores/ui'
@@ -8,32 +8,56 @@ const year = new Date().getFullYear()
 const ui = useUiStore()
 
 const text = computed(() => copy[ui.lang])
-
 const langButtonText = computed(() => (ui.lang === 'zh' ? copy.zh.buttons.langToEn : copy.en.buttons.langToZh))
 
 const themeAriaLabel = computed(() => {
-  if (ui.lang === 'zh') return ui.theme === 'light' ? '切换到黑夜模式' : '切换到白天模式'
   return ui.theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
 })
 
 const langAriaLabel = computed(() => {
-  return ui.lang === 'zh' ? '切换到英文' : 'Switch to Chinese'
+  return 'Switch language'
 })
+
+const mobileMenuOpen = ref(false)
+const menuAriaLabel = computed(() => (ui.lang === 'zh' ? 'Toggle menu' : 'Toggle menu'))
+
+function toggleMobileMenu() {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+function closeMobileMenu() {
+  mobileMenuOpen.value = false
+}
 </script>
 
 <template>
   <div class="app-shell">
     <header class="site-header">
-      <RouterLink class="brand" :to="{ path: '/', hash: '#home' }">我有间厝 · REE_SPACE</RouterLink>
+      <div class="header-top">
+        <RouterLink class="brand" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">我有间厝 · REE_SPACE</RouterLink>
 
-      <nav class="nav">
-        <RouterLink class="nav-link" :to="{ path: '/', hash: '#home' }">{{ text.nav.home }}</RouterLink>
-        <RouterLink class="nav-link" :to="{ path: '/', hash: '#projects' }">{{ text.nav.projects }}</RouterLink>
-        <RouterLink class="nav-link" :to="{ path: '/', hash: '#creative' }">{{ text.nav.creative }}</RouterLink>
-        <RouterLink class="nav-link" :to="{ path: '/', hash: '#about' }">{{ text.nav.about }}</RouterLink>
-        <RouterLink class="nav-link" :to="{ path: '/', hash: '#contact' }">{{ text.nav.contact }}</RouterLink>
+        <button
+          class="nav-toggle"
+          :class="{ open: mobileMenuOpen }"
+          type="button"
+          :aria-label="menuAriaLabel"
+          :aria-expanded="mobileMenuOpen"
+          @click="toggleMobileMenu"
+        >
+          <span class="nav-toggle-line" />
+          <span class="nav-toggle-line" />
+          <span class="nav-toggle-line" />
+        </button>
+      </div>
 
-        <button class="nav-icon" type="button" :aria-label="themeAriaLabel" @click="ui.toggleTheme">
+      <nav class="nav" :class="{ open: mobileMenuOpen }">
+        <RouterLink class="nav-link" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">{{ text.nav.home }}</RouterLink>
+        <RouterLink class="nav-link" :to="{ path: '/', hash: '#projects' }" @click="closeMobileMenu">{{ text.nav.projects }}</RouterLink>
+        <RouterLink class="nav-link" :to="{ path: '/', hash: '#creative' }" @click="closeMobileMenu">{{ text.nav.creative }}</RouterLink>
+        <RouterLink class="nav-link" :to="{ path: '/', hash: '#about' }" @click="closeMobileMenu">{{ text.nav.about }}</RouterLink>
+        <RouterLink class="nav-link" :to="{ path: '/', hash: '#contact' }" @click="closeMobileMenu">{{ text.nav.contact }}</RouterLink>
+
+        <button class="nav-icon" type="button" :aria-label="themeAriaLabel" @click="ui.toggleTheme(); closeMobileMenu()">
           <svg v-if="ui.theme === 'light'" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
             <path
               fill="none"
@@ -63,10 +87,11 @@ const langAriaLabel = computed(() => {
           </svg>
         </button>
 
-        <button class="nav-action nav-lang" type="button" :aria-label="langAriaLabel" @click="ui.toggleLang">
+        <button class="nav-action nav-lang" type="button" :aria-label="langAriaLabel" @click="ui.toggleLang(); closeMobileMenu()">
           {{ langButtonText }}
         </button>
-        <a class="nav-action resume" href="/resume.pdf" download>{{ text.nav.resume }}</a>
+
+        <a class="nav-action resume" href="/resume.pdf" download @click="closeMobileMenu">{{ text.nav.resume }}</a>
       </nav>
     </header>
 
@@ -103,6 +128,13 @@ const langAriaLabel = computed(() => {
   will-change: background-color;
 }
 
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 0 0 auto;
+}
+
 .brand {
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -111,12 +143,50 @@ const langAriaLabel = computed(() => {
   white-space: nowrap;
 }
 
+.nav-toggle {
+  display: none;
+  appearance: none;
+  border: 0;
+  background-color: var(--chip-bg);
+  color: var(--nav-link);
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.nav-toggle-line {
+  width: 14px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.nav-toggle.open .nav-toggle-line:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.nav-toggle.open .nav-toggle-line:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.open .nav-toggle-line:nth-child(3) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
 .nav {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
+  margin-left: auto;
 }
 
 .nav-link {
@@ -174,6 +244,11 @@ const langAriaLabel = computed(() => {
   color: var(--nav-link-hover);
 }
 
+.nav-toggle:hover {
+  background-color: var(--chip-bg-hover);
+  color: var(--nav-link-hover);
+}
+
 .nav-action:hover {
   background-color: var(--chip-bg-hover);
   color: var(--nav-link-hover);
@@ -202,6 +277,9 @@ const langAriaLabel = computed(() => {
   .nav-link,
   .nav-action,
   .nav-icon,
+  .nav-toggle,
+  .nav-toggle-line,
+  .nav,
   .site-footer {
     transition: none;
   }
@@ -209,10 +287,15 @@ const langAriaLabel = computed(() => {
 
 @media (max-width: 960px) {
   .site-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.95rem 0 0.85rem;
+    display: block;
+    padding: 0.9rem 0 0.8rem;
+  }
+
+  .header-top {
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.7rem;
+    margin-bottom: 0.6rem;
   }
 
   .brand {
@@ -220,21 +303,67 @@ const langAriaLabel = computed(() => {
     line-height: 1.2;
   }
 
+  .nav-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
   .nav {
+    margin-left: 0;
     width: 100%;
+    display: flex;
+    gap: 0.6rem;
+    flex-direction: column;
+    align-items: stretch;
     justify-content: flex-start;
-    gap: 0.55rem 0.75rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.65rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition:
+      max-height 0.32s ease,
+      opacity 0.22s ease,
+      transform 0.25s ease;
+  }
+
+  .nav.open {
+    max-height: 420px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav-link.router-link-exact-active {
+    border-bottom-width: 2px;
+    padding-bottom: 0.4rem;
+  }
+
+  .nav-icon,
+  .nav-action {
+    align-self: flex-start;
+  }
+
+  .resume {
+    margin-left: 0;
   }
 }
 
 @media (max-width: 640px) {
   .site-main {
-    padding: 1rem 0;
+    padding: 0.95rem 0;
   }
 
   .site-header {
-    gap: 0.6rem;
-    padding: 0.85rem 0 0.75rem;
+    padding: 0.82rem 0 0.72rem;
   }
 
   .brand {
@@ -242,40 +371,29 @@ const langAriaLabel = computed(() => {
     letter-spacing: 0.025em;
   }
 
-  .nav {
-    gap: 0.45rem 0.7rem;
-  }
-
   .nav-link {
-    order: 1;
-    font-size: 0.96rem;
-    padding: 0.2rem 0.05rem;
-  }
-
-  .nav-icon,
-  .nav-lang,
-  .resume {
-    order: 2;
+    font-size: 1rem;
   }
 
   .nav-action {
-    font-size: 0.9rem;
-    padding: 0.32rem 0.58rem;
-  }
-
-  .resume {
-    margin-left: auto;
+    font-size: 0.92rem;
+    padding: 0.35rem 0.62rem;
   }
 
   .nav-icon {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-toggle {
+    width: 36px;
+    height: 36px;
   }
 }
 
 @media (max-width: 420px) {
   .site-header {
-    padding: 0.75rem 0 0.7rem;
+    padding: 0.72rem 0 0.64rem;
   }
 
   .brand {
@@ -283,12 +401,38 @@ const langAriaLabel = computed(() => {
   }
 
   .nav-link {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .nav-action {
-    font-size: 0.84rem;
-    padding: 0.28rem 0.52rem;
+    font-size: 0.86rem;
+    padding: 0.3rem 0.54rem;
+  }
+
+  .nav-toggle {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+@media (min-width: 961px) {
+  .nav {
+    display: flex !important;
+  }
+
+  .nav-toggle {
+    display: none !important;
+  }
+
+  .nav-link {
+    border-bottom: 0;
+    padding: 0.25rem 0.1rem;
+  }
+
+  .nav-link.router-link-exact-active {
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 0.15rem;
   }
 }
 </style>
+
