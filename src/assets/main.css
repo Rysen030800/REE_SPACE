@@ -6,6 +6,18 @@
   padding: 0 1.25rem;
 }
 
+@media (max-width: 640px) {
+  #app {
+    padding: 0 0.95rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #app {
+    padding: 0 0.75rem;
+  }
+}
+
 a {
   color: inherit;
   transition: color 0.2s ease, background-color 0.2s ease;

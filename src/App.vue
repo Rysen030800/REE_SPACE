@@ -206,5 +206,89 @@ const langAriaLabel = computed(() => {
     transition: none;
   }
 }
-</style>
 
+@media (max-width: 960px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.95rem 0 0.85rem;
+  }
+
+  .brand {
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.55rem 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-main {
+    padding: 1rem 0;
+  }
+
+  .site-header {
+    gap: 0.6rem;
+    padding: 0.85rem 0 0.75rem;
+  }
+
+  .brand {
+    font-size: 1rem;
+    letter-spacing: 0.025em;
+  }
+
+  .nav {
+    gap: 0.45rem 0.7rem;
+  }
+
+  .nav-link {
+    order: 1;
+    font-size: 0.96rem;
+    padding: 0.2rem 0.05rem;
+  }
+
+  .nav-icon,
+  .nav-lang,
+  .resume {
+    order: 2;
+  }
+
+  .nav-action {
+    font-size: 0.9rem;
+    padding: 0.32rem 0.58rem;
+  }
+
+  .resume {
+    margin-left: auto;
+  }
+
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header {
+    padding: 0.75rem 0 0.7rem;
+  }
+
+  .brand {
+    font-size: 0.95rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
+  }
+
+  .nav-action {
+    font-size: 0.84rem;
+    padding: 0.28rem 0.52rem;
+  }
+}
+</style>
