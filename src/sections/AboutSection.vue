@@ -5,6 +5,36 @@ import { useUiStore } from '../stores/ui'
 
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
+
+const educationItems = computed(() => {
+  if (ui.lang === 'zh') {
+    return [
+      {
+        school: '香港城市大学',
+        period: '09.2025 - 10.2026',
+        degree: '硕士｜房屋与都市管理',
+      },
+      {
+        school: '福建理工大学',
+        period: '09.2019 - 07.2024',
+        degree: '工学学士｜风景园林',
+      },
+    ]
+  }
+
+  return [
+    {
+      school: 'City University of Hong Kong',
+      period: '09.2025 - 10.2026',
+      degree: 'Master | Housing and Urban Management',
+    },
+    {
+      school: 'Fujian University of Technology',
+      period: '09.2019 - 07.2024',
+      degree: 'Bachelor of Engineering | Landscape Architecture',
+    },
+  ]
+})
 </script>
 
 <template>
@@ -16,20 +46,12 @@ const text = computed(() => copy[ui.lang])
 
     <h3 class="anchor">{{ text.sections.about.education }}</h3>
     <div class="timeline">
-      <div class="item">
+      <div v-for="item in educationItems" :key="item.school" class="item">
         <div class="row">
-          <strong>City University of Hong Kong</strong>
-          <span class="meta">09.2025 - 10.2026</span>
+          <strong>{{ item.school }}</strong>
+          <span class="meta">{{ item.period }}</span>
         </div>
-        <div class="muted">MA Housing and Urban Management · Urban Stream</div>
-      </div>
-
-      <div class="item">
-        <div class="row">
-          <strong>Fujian University of Technology</strong>
-          <span class="meta">09.2019 - 07.2024</span>
-        </div>
-        <div class="muted">BEng · Landscape Architecture</div>
+        <div class="muted">{{ item.degree }}</div>
       </div>
     </div>
 
