@@ -1,4 +1,4 @@
-export type LocalizedText = { zh: string; en: string }
+﻿export type LocalizedText = { zh: string; en: string }
 
 export type CreativeWork = {
   title: LocalizedText
@@ -12,16 +12,19 @@ export const photography: CreativeWork[] = [
     title: { zh: '照片 01', en: 'Photo 01' },
     description: { zh: '在这里写一句简短描述。', en: 'Add a short caption here.' },
     meta: { zh: '地点 · 2026', en: 'Location · 2026' },
+    image: '/creative/photography/1766487588675.jpeg',
   },
   {
     title: { zh: '照片 02', en: 'Photo 02' },
     description: { zh: '在这里写一句简短描述。', en: 'Add a short caption here.' },
     meta: { zh: '地点 · 2026', en: 'Location · 2026' },
+    image: '/creative/photography/1770180035231.jpeg',
   },
   {
     title: { zh: '照片 03', en: 'Photo 03' },
     description: { zh: '在这里写一句简短描述。', en: 'Add a short caption here.' },
     meta: { zh: '地点 · 2026', en: 'Location · 2026' },
+    image: '/creative/photography/1770181006283.jpeg',
   },
 ]
 
@@ -43,4 +46,3 @@ export const favorites = {
   movies: ['Movie title', 'Movie title', 'Movie title'],
   tv: ['TV series title', 'TV series title', 'TV series title'],
 }
-

@@ -45,8 +45,8 @@ export const copy: Record<
     sections: {
       projects: { title: '经历', resume: '下载简历（PDF）' },
       creative: {
-        title: '作品',
-        lead: '摄影、绘画，以及一些个人偏好分享。',
+        title: '创作|灵光',
+        lead: '砖瓦之外，捕捉灵光。',
         photography: '摄影',
         illustration: '绘画',
         favorites: '分享',
@@ -88,8 +88,8 @@ export const copy: Record<
     sections: {
       projects: { title: 'Experience', resume: 'Download resume (PDF)' },
       creative: {
-        title: 'Creative',
-        lead: 'Photography, drawings, and personal favorites.',
+        title: 'Creative | AURA',
+        lead: 'Beyond bricks and mortar, capturing aura.',
         photography: 'Photography',
         illustration: 'Illustration',
         favorites: 'Favorites',
