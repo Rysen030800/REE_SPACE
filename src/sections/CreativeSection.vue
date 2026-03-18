@@ -30,6 +30,7 @@ const photoTitleRef = ref<HTMLElement | null>(null)
 const cardRefs = ref<HTMLElement[]>([])
 const offsets = ref<Offset[]>([])
 const settleProgress = ref(0)
+const disablePhotoMotion = ref(false)
 let rafId = 0
 let reduceMotion = false
 
@@ -67,7 +68,9 @@ function measureOffsets() {
 function updateProgress() {
   if (!gridRef.value || !photoTitleRef.value) return
 
-  if (reduceMotion) {
+  disablePhotoMotion.value = window.innerWidth <= 900
+
+  if (reduceMotion || disablePhotoMotion.value) {
     settleProgress.value = 1
     return
   }
