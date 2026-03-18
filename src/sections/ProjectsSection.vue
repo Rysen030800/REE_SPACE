@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { projects } from '../data/projects'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -53,13 +53,9 @@ function splitNumberedSections(content: string) {
   return sections.length > 0 ? sections : [content]
 }
 
-const internshipGroupTitle = computed(() =>
-  ui.lang === 'zh' ? '空间数字化 + 景观规划' : 'Spatial Digitalization + Landscape Planning',
-)
+const internshipGroupTitle = computed(() => (ui.lang === 'zh' ? '实习' : 'Internships'))
 
-const innovationGroupTitle = computed(() =>
-  ui.lang === 'zh' ? '用户体验 + 活化创新' : 'User Experience + Activation Innovation',
-)
+const innovationGroupTitle = computed(() => (ui.lang === 'zh' ? '项目' : 'Projects'))
 
 const internships = computed(() => {
   const smartCity = projects.find((p) => p.id === 'smart-city-intern')
@@ -103,6 +99,93 @@ const skillGroups = computed(() => {
     { title: 'AI Tools', items: ['ChatGPT, Gemini, AI content generation'] },
     { title: 'Languages', items: ['Mandarin (native), Min Nan (fluent)', 'English (IELTS 7.0), Cantonese (learning)', 'Japanese / Spanish (beginner)'] },
   ]
+})
+
+type CourseworkItem = {
+  id: string
+  title: { zh: string; en: string }
+  summary: { zh: string; en: string }
+  detail: { zh: string; en: string }
+}
+
+const courseworkItems: CourseworkItem[] = [
+  {
+    id: 'urban-data-studio',
+    title: { zh: '城市数据分析工作坊', en: 'Urban Data Analysis Studio' },
+    summary: { zh: 'POI 与 GIS 空间分析', en: 'POI and GIS spatial analysis' },
+    detail: {
+      zh: '课程目标：构建城市公共服务可达性评估模型。\n\n核心方法：\n1. 基于多源 POI 数据完成语义清洗与分类映射。\n2. 使用 GIS 网络分析计算 5/10/15 分钟服务圈层。\n3. 对商业、教育与医疗节点做叠加评估并输出可视化图组。\n\n成果输出：完成方法说明书、图表与汇报材料，形成可复用分析模板。',
+      en: 'Course goal: build an accessibility assessment model for urban public services.\n\nCore methods:\n1. Cleaned multi-source POI data and built category mappings.\n2. Computed 5/10/15-minute service catchments with GIS network analysis.\n3. Evaluated commercial, education, and medical nodes through overlay analysis.\n\nDeliverables: methodology notes, visualized charts, and presentation material with a reusable workflow template.',
+    },
+  },
+  {
+    id: 'service-system-design',
+    title: { zh: '服务系统设计实践', en: 'Service System Design Practice' },
+    summary: { zh: '用户旅程与触点重构', en: 'User journey and touchpoint redesign' },
+    detail: {
+      zh: '课程主题：面向公共空间的服务体验优化。\n\n项目过程：\n1. 通过访谈与观察建立用户旅程地图，定位关键断点。\n2. 设计线上线下一体化触点并构建服务蓝图。\n3. 通过原型测试迭代信息层级、导视逻辑与服务路径。\n\n结果：输出完整服务策略包与可执行的分阶段落地建议。',
+      en: 'Topic: optimizing service experience for public space scenarios.\n\nProcess:\n1. Mapped user journeys from interviews and observations to locate pain points.\n2. Designed integrated online-offline touchpoints and a service blueprint.\n3. Iterated information hierarchy, wayfinding logic, and service flow through prototyping.\n\nOutcome: delivered a complete strategy package with phased implementation recommendations.',
+    },
+  },
+  {
+    id: 'space-activation-lab',
+    title: { zh: '空间活化策略实验', en: 'Spatial Activation Strategy Lab' },
+    summary: { zh: '历史场地功能再编程', en: 'Adaptive reuse and functional programming' },
+    detail: {
+      zh: '课程内容：针对历史空间进行功能复合与运营推演。\n\n执行要点：\n1. 建立场地现状模型与行为热力图，识别空间低效区。\n2. 提出文化展示、商业运营与公共活动复合策略。\n3. 用时间轴模拟日常运营、活动节点与资源配置。\n\n结论：形成“设计 + 运营”一体化方案，并通过评图答辩。',
+      en: 'Course scope: propose mixed-use programming and operation simulation for historic space.\n\nExecution:\n1. Built baseline site model and behavior heatmaps to identify underused zones.\n2. Proposed integrated strategies for cultural display, commerce, and public events.\n3. Simulated operational timeline, event nodes, and resource allocation.\n\nConclusion: delivered an integrated design-operation proposal and final review presentation.',
+    },
+  },
+  {
+    id: 'policy-and-implementation',
+    title: { zh: '政策研判与落地路径', en: 'Policy Review and Implementation Path' },
+    summary: { zh: '政策转译到执行框架', en: 'Policy translation to execution framework' },
+    detail: {
+      zh: '课程命题：把政策目标转化为项目执行路径。\n\n研究步骤：\n1. 梳理国家与地方政策条文，提炼硬性指标与约束条件。\n2. 将指标拆解为阶段任务、协同角色与验收节点。\n3. 建立风险清单与应对机制，形成可跟踪进度表。\n\n成果：提交策略报告、路线图与项目管理看板模板。',
+      en: 'Task: translate policy goals into an executable project path.\n\nResearch steps:\n1. Parsed national and local policy clauses into mandatory metrics and constraints.\n2. Broke metrics into phased tasks, stakeholders, and acceptance milestones.\n3. Built a risk register and mitigation workflow with trackable timelines.\n\nDeliverables: strategy report, roadmap, and project board template.',
+    },
+  },
+]
+
+const activeCourseworkId = ref<string | null>(null)
+
+const activeCoursework = computed(() =>
+  courseworkItems.find((item) => item.id === activeCourseworkId.value) ?? null,
+)
+
+let bodyOverflowBeforeModal = ''
+let bodyPaddingRightBeforeModal = ''
+
+function openCoursework(id: string) {
+  activeCourseworkId.value = id
+}
+
+function closeCoursework() {
+  activeCourseworkId.value = null
+}
+
+watch(activeCourseworkId, (id) => {
+  if (typeof document === 'undefined') return
+
+  if (id) {
+    bodyOverflowBeforeModal = document.body.style.overflow
+    bodyPaddingRightBeforeModal = document.body.style.paddingRight
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    document.body.style.overflow = 'hidden'
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+    return
+  }
+
+  document.body.style.overflow = bodyOverflowBeforeModal
+  document.body.style.paddingRight = bodyPaddingRightBeforeModal
+})
+
+onBeforeUnmount(() => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = bodyOverflowBeforeModal
+  document.body.style.paddingRight = bodyPaddingRightBeforeModal
 })
 </script>
 
@@ -180,6 +263,18 @@ const skillGroups = computed(() => {
           </div>
         </article>
       </div>
+      <div class="coursework-grid coursework-grid-inline">
+        <button
+          v-for="item in courseworkItems"
+          :key="item.id"
+          type="button"
+          class="coursework-card"
+          @click="openCoursework(item.id)"
+        >
+          <h4>{{ pick(item.title) }}</h4>
+          <p>{{ pick(item.summary) }}</p>
+        </button>
+      </div>
     </div>
 
     <h3 id="about" class="anchor anchor-with-icon">
@@ -213,6 +308,25 @@ const skillGroups = computed(() => {
         </ul>
       </article>
     </div>
+
+    <div
+      v-if="activeCoursework"
+      class="coursework-overlay"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="pick(activeCoursework.title)"
+      @click.self="closeCoursework"
+    >
+      <article class="coursework-modal">
+        <header class="coursework-modal-head">
+          <h4>{{ pick(activeCoursework.title) }}</h4>
+          <button type="button" class="coursework-close" @click="closeCoursework">×</button>
+        </header>
+        <div class="coursework-modal-body">
+          <p>{{ pick(activeCoursework.detail) }}</p>
+        </div>
+      </article>
+    </div>
   </section>
 </template>
 
@@ -237,11 +351,12 @@ const skillGroups = computed(() => {
 
 .group-title {
   margin: 0 0 0.55rem;
-  font-size: 0.92rem;
+  font-size: clamp(1.04rem, 1.15vw, 1.16rem);
   line-height: 1.2;
   letter-spacing: 0.04em;
   text-transform: none;
   color: var(--nav-link-hover);
+  font-weight: 600;
 }
 
 .group-title-with-icon,
@@ -250,6 +365,8 @@ const skillGroups = computed(() => {
   align-items: center;
   gap: 0.45rem;
   color: var(--color-heading);
+  font-size: clamp(1.04rem, 1.15vw, 1.16rem);
+  font-weight: 600;
 }
 
 .mini-icon {
@@ -411,6 +528,108 @@ const skillGroups = computed(() => {
   margin: 0.5rem 0 1.25rem;
 }
 
+.coursework-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.coursework-grid-inline {
+  margin-top: 0.95rem;
+}
+
+.coursework-card {
+  border: 1px solid var(--section-card-border);
+  border-radius: 14px;
+  padding: 0.95rem;
+  background: var(--color-background-soft);
+  color: var(--color-text);
+  text-align: left;
+  min-height: 140px;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+}
+
+.coursework-card h4 {
+  margin: 0 0 0.45rem;
+  color: var(--color-heading);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.coursework-card p {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+  font-size: 0.92rem;
+}
+
+.coursework-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.36);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.coursework-modal {
+  width: min(760px, 94vw);
+  max-height: min(78vh, 740px);
+  border: 1px solid var(--section-card-border);
+  border-radius: 16px;
+  background: var(--color-background-soft);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
+  transform-origin: center center;
+  transform: scale(0.84) rotateY(-66deg);
+  animation: coursework-flip-in 0.68s cubic-bezier(0.2, 0.78, 0.2, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  backface-visibility: hidden;
+}
+
+.coursework-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--section-card-border);
+}
+
+.coursework-modal-head h4 {
+  margin: 0;
+  color: var(--color-heading);
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.coursework-close {
+  border: 1px solid var(--section-card-border);
+  background: var(--color-background);
+  color: var(--color-heading);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.coursework-modal-body {
+  padding: 0.95rem 1rem 1.05rem;
+  overflow-y: auto;
+  max-height: min(62vh, 560px);
+}
+
+.coursework-modal-body p {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.62;
+}
+
 .info-card {
   border: 1px solid var(--section-card-border);
   border-radius: 14px;
@@ -455,15 +674,21 @@ const skillGroups = computed(() => {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
 }
 
+:root[data-theme='dark'] .coursework-card {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
 @media (hover: hover) {
   .card:hover,
-  .info-card:hover {
+  .info-card:hover,
+  .coursework-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
   }
 
   :root[data-theme='dark'] .card:hover,
-  :root[data-theme='dark'] .info-card:hover {
+  :root[data-theme='dark'] .info-card:hover,
+  :root[data-theme='dark'] .coursework-card:hover {
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
   }
 }
@@ -485,6 +710,10 @@ const skillGroups = computed(() => {
   .internship-visual-stack {
     display: none;
   }
+
+  .coursework-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1200px) {
@@ -493,11 +722,12 @@ const skillGroups = computed(() => {
   }
 
   .group-title {
-    font-size: 0.98rem;
+    font-size: clamp(1.08rem, 1.05vw, 1.2rem);
   }
 
   .pair-grid,
-  .skills {
+  .skills,
+  .coursework-grid {
     gap: 1.15rem;
   }
 
@@ -533,12 +763,38 @@ const skillGroups = computed(() => {
   .info-card {
     padding: 1rem 1.1rem;
   }
+
+  .coursework-card {
+    min-height: 150px;
+    padding: 1.05rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .info-card {
+  .info-card,
+  .coursework-card {
     transition: none;
+  }
+
+  .coursework-modal {
+    animation: none;
+    transform: scale(1) rotateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .coursework-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes coursework-flip-in {
+  from {
+    transform: scale(0.84) rotateY(-66deg);
+  }
+  to {
+    transform: scale(1) rotateY(0);
   }
 }
 </style>

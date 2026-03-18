@@ -8,9 +8,8 @@ export type CreativeWork = {
 }
 
 export type MusicAlbum = {
-  artist: string
   title: string
-  image?: string
+  image: string
 }
 
 export const photography: CreativeWork[] = [
@@ -132,21 +131,41 @@ export const favorites = {
 }
 
 export const musicAlbums: MusicAlbum[] = [
-  { artist: 'Lexie Liu', title: 'THE HAPPY STAR', image: '/life/music/the-happy-star.jpg' },
-  { artist: 'Lady Gaga', title: 'Mayhem', image: '/life/music/mayhem.jpg' },
-  { artist: '苏打绿', title: '冬未了', image: '/life/music/dong-wei-liao.jpg' },
-  { artist: '郑宜农', title: '新世纪的女儿演唱会', image: '/life/music/new-century-daughter-live.jpg' },
-  { artist: 'NMIXX', title: 'Blue Valentine', image: '/life/music/blue-valentine.jpg' },
-  { artist: '宇多田光', title: 'One Last Kiss', image: '/life/music/one-last-kiss.jpg' },
-  { artist: 'Ariana Grande', title: 'eternal sunshine', image: '/life/music/eternal-sunshine.jpg' },
-  { artist: 'Lorde', title: 'melodrama', image: '/life/music/melodrama.jpg' },
-  { artist: 'Charli XCX', title: 'BRAT', image: '/life/music/brat.jpg' },
-  { artist: 'XG', title: 'gala', image: '/life/music/gala.jpg' },
-  { artist: 'Addison Rae', title: 'ADDISON', image: '/life/music/addison.jpg' },
-  { artist: 'RAYE', title: 'My 21st Century Blues', image: '/life/music/my-21st-century-blues.jpg' },
-  { artist: 'Troye Sivan', title: 'Rush', image: '/life/music/rush.jpg' },
-  { artist: 'SE SO NEON', title: 'NOW', image: '/life/music/now.jpg' },
-  { artist: '方大同', title: '梦想家', image: '/life/music/dreamer.jpg' },
-  { artist: '谭维维', title: '3811', image: '/life/music/3811.jpg' },
-  { artist: 'NewJeans', title: 'Ditto', image: '/life/music/ditto.jpg' },
+  { title: '3811', image: '/life/music/3811.jpg' },
+  { title: 'aq', image: '/life/music/aq.jpg' },
+  { title: 'autumn', image: '/life/music/autumn.jpg' },
+  { title: 'be', image: '/life/music/be.jpg' },
+  { title: 'bv', image: '/life/music/bv.jpg' },
+  { title: 'df', image: '/life/music/df.jpg' },
+  { title: 'dreamer', image: '/life/music/dreamer.jpg' },
+  { title: 'earth', image: '/life/music/earth.jpg' },
+  { title: 'es', image: '/life/music/es.jpg' },
+  { title: 'firstlove', image: '/life/music/firstlove.jpg' },
+  { title: 'fo', image: '/life/music/fo.jpg' },
+  { title: 'gala', image: '/life/music/gala.jpg' },
+  { title: 'happy star', image: '/life/music/happy%20star.jpg' },
+  { title: 'hm', image: '/life/music/hm.jpg' },
+  { title: 'iyky', image: '/life/music/iyky.jpg' },
+  { title: 'jw', image: '/life/music/jw.jpg' },
+  { title: 'lorde', image: '/life/music/lorde.jpg' },
+  { title: 'lungs', image: '/life/music/lungs.jpg' },
+  { title: 'mono', image: '/life/music/mono.jpg' },
+  { title: 'nwjz2', image: '/life/music/nwjz2.jpg' },
+  { title: 'nwz', image: '/life/music/nwz.jpg' },
+  { title: 'onelastkiss', image: '/life/music/onelastkiss.jpg' },
+  { title: 'paleblue', image: '/life/music/paleblue.jpg' },
+  { title: 'pluto', image: '/life/music/pluto.jpg' },
+  { title: 'pop girl', image: '/life/music/pop%20girl.jpg' },
+  { title: 'rep', image: '/life/music/rep.jpg' },
+  { title: 'teenager', image: '/life/music/teenager.jpg' },
+  { title: 'tfg', image: '/life/music/tfg.jpg' },
+  { title: 'troye', image: '/life/music/troye.jpg' },
+  { title: 'wi', image: '/life/music/wi.jpg' },
+  { title: 'winter', image: '/life/music/winter.jpg' },
+  { title: 'wsmh', image: '/life/music/wsmh.jpg' },
+  { title: 'wwimf', image: '/life/music/wwimf.jpg' },
+  { title: 'xcx', image: '/life/music/xcx.jpg' },
+  { title: 'yuduo', image: '/life/music/yuduo.jpg' },
+  { title: '藏着', image: '/life/music/%E8%97%8F%E7%9D%80.jpg' },
+  { title: '行走德育', image: '/life/music/%E8%A1%8C%E8%B5%B0%E5%BE%B7%E8%82%B2.jpg' },
 ]

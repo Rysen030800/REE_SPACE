@@ -13,6 +13,11 @@ const titleLightSrc = computed(() =>
 const titleDarkSrc = computed(() =>
   ui.lang === 'zh' ? `${titleBase}%E7%94%9F%E6%B4%BB%202.png` : `${titleBase}life%202.png`,
 )
+
+function mosaicSize(index: number) {
+  const pattern = ['lg', 'sm', 'sm', 'md', 'sm', 'lg', 'sm', 'md', 'sm', 'sm', 'lg', 'sm']
+  return pattern[index % pattern.length]
+}
 </script>
 
 <template>
@@ -27,23 +32,15 @@ const titleDarkSrc = computed(() =>
       <div class="fav-card music-card">
         <h4>{{ text.sections.life.music }}</h4>
         <div class="album-mosaic">
-          <article v-for="album in musicAlbums" :key="`${album.artist}-${album.title}`" class="album-tile">
-            <img
-              v-if="album.image"
-              class="album-cover"
-              :src="album.image"
-              :alt="`${album.artist} - ${album.title}`"
-              loading="lazy"
-            />
-            <div v-else class="album-placeholder">
-              <strong>{{ album.title }}</strong>
-              <span>{{ album.artist }}</span>
-            </div>
+          <article
+            v-for="(album, idx) in musicAlbums"
+            :key="`${album.title}-${idx}`"
+            class="album-tile"
+            :class="`album-${mosaicSize(idx)}`"
+          >
+            <img class="album-cover" :src="album.image" :alt="album.title" loading="lazy" />
           </article>
         </div>
-        <ul class="list music-list">
-          <li v-for="x in favorites.music" :key="x">{{ x }}</li>
-        </ul>
       </div>
 
       <div class="fav-card">
@@ -109,23 +106,39 @@ const titleDarkSrc = computed(() =>
 }
 
 .album-mosaic {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0;
   gap: 0.45rem;
 }
 
 .album-tile {
   margin: 0;
-  width: 100%;
-  aspect-ratio: 1;
+  width: 72px;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 8px;
   background: var(--color-background);
   border: 1px solid var(--color-border);
+  flex: 0 0 auto;
 }
 
-.album-cover,
-.album-placeholder {
+.album-lg {
+  width: 100px;
+}
+
+.album-md {
+  width: 86px;
+}
+
+.album-sm {
+  width: 72px;
+}
+
+.album-cover {
   width: 100%;
   height: 100%;
   display: block;
@@ -133,25 +146,6 @@ const titleDarkSrc = computed(() =>
 
 .album-cover {
   object-fit: cover;
-}
-
-.album-placeholder {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0.35rem;
-  font-size: 0.55rem;
-  line-height: 1.1;
-  color: var(--color-heading);
-}
-
-.album-placeholder strong {
-  font-weight: 600;
-}
-
-.album-placeholder span {
-  opacity: 0.75;
 }
 
 :root[data-theme='dark'] .fav-card {
@@ -184,7 +178,47 @@ const titleDarkSrc = computed(() =>
   }
 
   .album-mosaic {
-    grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .album-lg {
+    width: 108px;
+  }
+
+  .album-md {
+    width: 92px;
+  }
+
+  .album-sm {
+    width: 78px;
+  }
+}
+
+@media (max-width: 900px) {
+  .album-lg {
+    width: 88px;
+  }
+
+  .album-md {
+    width: 78px;
+  }
+
+  .album-sm {
+    width: 66px;
+  }
+}
+
+@media (max-width: 640px) {
+  .album-lg {
+    width: 74px;
+  }
+
+  .album-md {
+    width: 66px;
+  }
+
+  .album-sm {
+    width: 58px;
   }
 }
 
