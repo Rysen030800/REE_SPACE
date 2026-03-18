@@ -26,13 +26,11 @@
 
   <ProjectsSection />
   <CreativeSection />
-  <AboutSection />
   <ContactSection />
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import AboutSection from '../sections/AboutSection.vue'
 import ContactSection from '../sections/ContactSection.vue'
 import CreativeSection from '../sections/CreativeSection.vue'
 import ProjectsSection from '../sections/ProjectsSection.vue'

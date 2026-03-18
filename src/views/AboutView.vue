@@ -87,10 +87,6 @@
       </div>
     </div>
 
-    <div class="resume">
-      <a class="resume-link" href="/resume.pdf" download>Download resume (PDF)</a>
-      <p class="muted">Put your PDF at <code>REE_SPACE/public/resume.pdf</code>.</p>
-    </div>
   </section>
 </template>
 
@@ -159,19 +155,4 @@
   font-size: 1.02rem;
 }
 
-.resume {
-  border: 1px dashed var(--color-border);
-  border-radius: 14px;
-  padding: 0.9rem 1rem;
-  background: var(--color-background-soft);
-}
-
-.resume-link {
-  text-decoration: none;
-  display: inline-flex;
-  padding: 0.45rem 0.7rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-}
 </style>
