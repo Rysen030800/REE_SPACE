@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { projects } from '../data/projects'
 import { copy } from '../i18n'
@@ -10,6 +10,26 @@ const text = computed(() => copy[ui.lang])
 function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
 }
+
+const internshipGroupTitle = computed(() =>
+  ui.lang === 'zh' ? '景观规划 + 空间数字化' : 'Landscape Planning + Spatial Digitalization',
+)
+
+const innovationGroupTitle = computed(() =>
+  ui.lang === 'zh' ? '用户体验 + 活化创新' : 'User Experience + Activation Innovation',
+)
+
+const internships = computed(() => {
+  const smartCity = projects.find((p) => p.id === 'smart-city-intern')
+  const landscape = projects.find((p) => p.id === 'landscape-intern')
+  return [smartCity, landscape].filter((p): p is NonNullable<typeof p> => Boolean(p))
+})
+
+const innovation = computed(() => {
+  const ux = projects.find((p) => p.id === 'ux-wupenicity')
+  const historic = projects.find((p) => p.id === 'historic-activation')
+  return [ux, historic].filter((p): p is NonNullable<typeof p> => Boolean(p))
+})
 </script>
 
 <template>
@@ -19,14 +39,30 @@ function pick(value: { zh: string; en: string }) {
       <a class="resume" href="/resume.pdf" download>{{ text.sections.projects.resume }}</a>
     </div>
 
-    <div class="grid">
-      <article v-for="p in projects" :key="pick(p.title)" class="card">
-        <h3 class="title">{{ pick(p.title) }}</h3>
-        <p class="desc">{{ pick(p.description) }}</p>
-        <ul class="tags">
-          <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
-        </ul>
-      </article>
+    <div class="group">
+      <p class="group-title">{{ internshipGroupTitle }}</p>
+      <div class="pair-grid">
+        <article v-for="p in internships" :key="p.id" class="card">
+          <h3 class="title">{{ pick(p.title) }}</h3>
+          <p class="desc">{{ pick(p.description) }}</p>
+          <ul class="tags">
+            <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-title">{{ innovationGroupTitle }}</p>
+      <div class="pair-grid">
+        <article v-for="p in innovation" :key="p.id" class="card">
+          <h3 class="title">{{ pick(p.title) }}</h3>
+          <p class="desc">{{ pick(p.description) }}</p>
+          <ul class="tags">
+            <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
+          </ul>
+        </article>
+      </div>
     </div>
   </section>
 </template>
@@ -43,7 +79,7 @@ function pick(value: { zh: string; en: string }) {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.9rem;
 }
 
 .resume {
@@ -55,9 +91,22 @@ function pick(value: { zh: string; en: string }) {
   opacity: 0.95;
 }
 
-.grid {
+.group {
+  margin-bottom: 1rem;
+}
+
+.group-title {
+  margin: 0 0 0.55rem;
+  font-size: 0.92rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--nav-link-hover);
+}
+
+.pair-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -78,23 +127,14 @@ function pick(value: { zh: string; en: string }) {
   font-size: clamp(1.03rem, 1.2vw, 1.1rem);
   line-height: 1.34;
   color: var(--color-heading);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(1.34em * 2);
 }
 
 .desc {
   margin: 0 0 0.75rem;
   line-height: 1.52;
   font-size: clamp(0.95rem, 1.04vw, 1rem);
-  opacity: 0.85;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(1.52em * 4);
+  opacity: 0.9;
+  white-space: pre-line;
 }
 
 .tags {
@@ -127,6 +167,12 @@ function pick(value: { zh: string; en: string }) {
 
   :root[data-theme='dark'] .card:hover {
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (max-width: 900px) {
+  .pair-grid {
+    grid-template-columns: 1fr;
   }
 }
 
