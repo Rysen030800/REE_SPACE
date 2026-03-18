@@ -107,6 +107,8 @@ const text = computed(() => copy[ui.lang])
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .row {
@@ -134,6 +136,8 @@ const text = computed(() => copy[ui.lang])
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .skill h4 {
@@ -153,6 +157,8 @@ const text = computed(() => copy[ui.lang])
   border-radius: 14px;
   padding: 0.9rem 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .resume-link {
@@ -162,5 +168,34 @@ const text = computed(() => copy[ui.lang])
   border-radius: 10px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
+}
+
+:root[data-theme='dark'] .item,
+:root[data-theme='dark'] .skill,
+:root[data-theme='dark'] .resume {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
+@media (hover: hover) {
+  .item:hover,
+  .skill:hover,
+  .resume:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .item:hover,
+  :root[data-theme='dark'] .skill:hover,
+  :root[data-theme='dark'] .resume:hover {
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .skill,
+  .resume {
+    transition: none;
+  }
 }
 </style>

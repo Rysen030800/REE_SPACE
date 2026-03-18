@@ -59,6 +59,8 @@ const text = computed(() => copy[ui.lang])
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .card h3 {
@@ -69,5 +71,26 @@ const text = computed(() => copy[ui.lang])
 
 .muted {
   opacity: 1;
+}
+
+:root[data-theme='dark'] .card {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .card:hover {
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 </style>

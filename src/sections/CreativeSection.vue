@@ -100,6 +100,8 @@ function pickOpt(value: { zh: string; en: string } | undefined) {
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .img {
@@ -150,6 +152,8 @@ function pickOpt(value: { zh: string; en: string } | undefined) {
   border-radius: 14px;
   padding: 1rem;
   background: var(--color-background-soft);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .fav-card h4 {
@@ -161,5 +165,30 @@ function pickOpt(value: { zh: string; en: string } | undefined) {
   margin: 0;
   padding-left: 1.1rem;
   opacity: 1;
+}
+
+:root[data-theme='dark'] .card,
+:root[data-theme='dark'] .fav-card {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
+@media (hover: hover) {
+  .card:hover,
+  .fav-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .card:hover,
+  :root[data-theme='dark'] .fav-card:hover {
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .fav-card {
+    transition: none;
+  }
 }
 </style>

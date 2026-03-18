@@ -69,6 +69,8 @@ function pick(value: { zh: string; en: string }) {
   display: flex;
   flex-direction: column;
   min-height: clamp(220px, 28vw, 264px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .title {
@@ -111,5 +113,26 @@ function pick(value: { zh: string; en: string }) {
   border: 1px solid var(--color-border);
   background: var(--color-background);
   opacity: 0.9;
+}
+
+:root[data-theme='dark'] .card {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .card:hover {
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 </style>
