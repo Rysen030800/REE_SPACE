@@ -57,6 +57,7 @@ function closeMobileMenu() {
           <RouterLink class="nav-link" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">{{ text.nav.home }}</RouterLink>
           <RouterLink class="nav-link" :to="{ path: '/', hash: '#projects' }" @click="closeMobileMenu">{{ text.nav.projects }}</RouterLink>
           <RouterLink class="nav-link" :to="{ path: '/', hash: '#creative' }" @click="closeMobileMenu">{{ text.nav.creative }}</RouterLink>
+          <RouterLink class="nav-link" :to="{ path: '/', hash: '#life' }" @click="closeMobileMenu">{{ text.nav.life }}</RouterLink>
           <RouterLink class="nav-link" :to="{ path: '/', hash: '#contact' }" @click="closeMobileMenu">{{ text.nav.contact }}</RouterLink>
         </div>
 

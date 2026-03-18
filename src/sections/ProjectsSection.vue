@@ -6,6 +6,13 @@ import { useUiStore } from '../stores/ui'
 
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
+const titleBase = `${import.meta.env.BASE_URL}title/`
+const titleLightSrc = computed(() =>
+  ui.lang === 'zh' ? `${titleBase}%E7%BB%8F%E5%8E%861.png` : `${titleBase}experience%201.png`,
+)
+const titleDarkSrc = computed(() =>
+  ui.lang === 'zh' ? `${titleBase}%E7%BB%8F%E5%8E%86%202.png` : `${titleBase}experience%202.png`,
+)
 
 function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
@@ -91,7 +98,10 @@ const skillGroups = computed(() => {
 <template>
   <section id="projects" class="section">
     <div class="head">
-      <h2>{{ text.sections.projects.title }}</h2>
+      <h2 class="section-title-image" :aria-label="text.sections.projects.title">
+        <img class="title-image title-image-light" :src="titleLightSrc" :alt="text.sections.projects.title" />
+        <img class="title-image title-image-dark" :src="titleDarkSrc" :alt="text.sections.projects.title" />
+      </h2>
     </div>
 
     <div class="group">
@@ -168,10 +178,10 @@ const skillGroups = computed(() => {
 .head {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 0.9rem;
+  margin-bottom: 1.1rem;
 }
 
 .group {
@@ -369,6 +379,54 @@ const skillGroups = computed(() => {
   .card-footer {
     flex-wrap: wrap;
     row-gap: 0.45rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .section {
+    padding: 1.8rem 0;
+  }
+
+  .group-title {
+    font-size: 0.98rem;
+  }
+
+  .pair-grid,
+  .skills {
+    gap: 1.15rem;
+  }
+
+  .card {
+    min-height: clamp(250px, 24vw, 300px);
+    padding: 1.1rem 1.1rem 1.15rem;
+  }
+
+  .internship-grid .card {
+    min-height: 240px;
+  }
+
+  .card-landscape {
+    min-height: 470px;
+  }
+
+  .title {
+    font-size: clamp(1.08rem, 1.15vw, 1.22rem);
+  }
+
+  .desc {
+    font-size: clamp(0.98rem, 1.02vw, 1.06rem);
+  }
+
+  .tag {
+    font-size: 0.84rem;
+  }
+
+  .date-chip {
+    font-size: 0.86rem;
+  }
+
+  .info-card {
+    padding: 1rem 1.1rem;
   }
 }
 

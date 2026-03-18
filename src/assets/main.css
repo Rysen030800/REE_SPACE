@@ -1,9 +1,15 @@
 @import './base.css';
 
 #app {
-  max-width: 1180px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 1600px) {
+  #app {
+    max-width: 1400px;
+  }
 }
 
 @media (max-width: 640px) {

@@ -26,6 +26,7 @@
 
   <ProjectsSection />
   <CreativeSection />
+  <LifeSection />
   <ContactSection />
 </template>
 
@@ -33,6 +34,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ContactSection from '../sections/ContactSection.vue'
 import CreativeSection from '../sections/CreativeSection.vue'
+import LifeSection from '../sections/LifeSection.vue'
 import ProjectsSection from '../sections/ProjectsSection.vue'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -344,6 +346,34 @@ onBeforeUnmount(() => {
   .hero-art::after,
   .art {
     transition: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    padding: 5.4rem 0 4.4rem;
+  }
+
+  .hero-left,
+  .statement {
+    max-width: 78ch;
+  }
+
+  .hero-art {
+    width: min(1080px, 84vw);
+    right: -6vw;
+  }
+
+  .title {
+    font-size: clamp(3.75rem, 7.2vw, 6.5rem);
+  }
+
+  .intro {
+    font-size: clamp(1.75rem, 3vw, 2.4rem);
+  }
+
+  .statement {
+    font-size: clamp(1.05rem, 1.35vw, 1.26rem);
   }
 }
 

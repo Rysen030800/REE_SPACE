@@ -3,7 +3,7 @@
 export const copy: Record<
   Lang,
   {
-    nav: { home: string; projects: string; creative: string; about: string; contact: string; resume: string }
+    nav: { home: string; projects: string; creative: string; life: string; about: string; contact: string; resume: string }
     hero: { kicker: string; subtitle: string; introPrefix: string; introSuffix: string; statement: string }
     buttons: { themeLight: string; themeDark: string; langToZh: string; langToEn: string }
     sections: {
@@ -13,7 +13,10 @@ export const copy: Record<
         lead: string
         photography: string
         illustration: string
-        favorites: string
+      }
+      life: {
+        title: string
+        lead: string
         music: string
         movies: string
         tv: string
@@ -32,7 +35,7 @@ export const copy: Record<
   }
 > = {
   zh: {
-    nav: { home: '首页', projects: '经历', creative: '作品', about: '关于', contact: '联系', resume: '简历 PDF' },
+    nav: { home: '首页', projects: '经历', creative: '创作', life: '生活', about: '关于', contact: '联系', resume: '简历 PDF' },
     hero: {
       kicker: "Hi, I'm",
       subtitle: '房屋与城市管理 · 风景园林 · 数据分析',
@@ -49,7 +52,10 @@ export const copy: Record<
         lead: '砖瓦之外，捕捉灵光。',
         photography: '摄影',
         illustration: '绘画',
-        favorites: '分享',
+      },
+      life: {
+        title: '生活',
+        lead: '一些个人偏好分享。',
         music: '音乐',
         movies: '电影',
         tv: '影视剧',
@@ -75,7 +81,7 @@ export const copy: Record<
     },
   },
   en: {
-    nav: { home: 'Home', projects: 'Experience', creative: 'Creative', about: 'About', contact: 'Contact', resume: 'Resume PDF' },
+    nav: { home: 'Home', projects: 'Experience', creative: 'Creative', life: 'Life', about: 'About', contact: 'Contact', resume: 'Resume PDF' },
     hero: {
       kicker: "Hi, I'm",
       subtitle: 'Housing & Urban Management · Landscape Architecture · Data Analysis',
@@ -92,7 +98,10 @@ export const copy: Record<
         lead: 'Beyond bricks and mortar, capturing aura.',
         photography: 'Photography',
         illustration: 'Illustration',
-        favorites: 'Favorites',
+      },
+      life: {
+        title: 'Life',
+        lead: 'Personal favorites and daily inspirations.',
         music: 'Music',
         movies: 'Movies',
         tv: 'TV Shows',
