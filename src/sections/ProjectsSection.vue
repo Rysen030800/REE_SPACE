@@ -12,7 +12,7 @@ function pick(value: { zh: string; en: string }) {
 }
 
 const internshipGroupTitle = computed(() =>
-  ui.lang === 'zh' ? '景观规划 + 空间数字化' : 'Landscape Planning + Spatial Digitalization',
+  ui.lang === 'zh' ? '空间数字化 + 景观规划' : 'Spatial Digitalization + Landscape Planning',
 )
 
 const innovationGroupTitle = computed(() =>
@@ -41,26 +41,32 @@ const innovation = computed(() => {
 
     <div class="group">
       <p class="group-title">{{ internshipGroupTitle }}</p>
-      <div class="pair-grid">
-        <article v-for="p in internships" :key="p.id" class="card">
+      <div class="pair-grid internship-grid">
+        <article v-for="p in internships" :key="p.id" class="card" :class="{ 'card-landscape': p.id === 'landscape-intern' }">
           <h3 class="title">{{ pick(p.title) }}</h3>
           <p class="desc">{{ pick(p.description) }}</p>
-          <ul class="tags">
-            <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
-          </ul>
+          <div class="card-footer">
+            <ul class="tags">
+              <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
+            </ul>
+            <span class="date-chip">{{ p.date }}</span>
+          </div>
         </article>
       </div>
     </div>
 
     <div class="group">
       <p class="group-title">{{ innovationGroupTitle }}</p>
-      <div class="pair-grid">
+      <div class="pair-grid innovation-grid">
         <article v-for="p in innovation" :key="p.id" class="card">
           <h3 class="title">{{ pick(p.title) }}</h3>
           <p class="desc">{{ pick(p.description) }}</p>
-          <ul class="tags">
-            <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
-          </ul>
+          <div class="card-footer">
+            <ul class="tags">
+              <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
+            </ul>
+            <span class="date-chip">{{ p.date }}</span>
+          </div>
         </article>
       </div>
     </div>
@@ -110,6 +116,18 @@ const innovation = computed(() => {
   gap: 1rem;
 }
 
+.internship-grid {
+  grid-template-columns: 1fr;
+}
+
+.internship-grid .card {
+  min-height: 210px;
+}
+
+.card-landscape {
+  min-height: 420px;
+}
+
 .card {
   border: 1px solid var(--section-card-border);
   border-radius: 14px;
@@ -137,13 +155,21 @@ const innovation = computed(() => {
   white-space: pre-line;
 }
 
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
 .tags {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   padding: 0;
-  margin: auto 0 0.15rem;
+  margin: 0;
 }
 
 .tag {
@@ -153,6 +179,20 @@ const innovation = computed(() => {
   border: 1px solid var(--color-border);
   background: var(--color-background);
   opacity: 0.9;
+}
+
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 0.24rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--section-card-border);
+  color: var(--section-card-border);
+  line-height: 1.1;
+  font-size: 0.82rem;
+  min-height: 1.8rem;
 }
 
 :root[data-theme='dark'] .card {
@@ -173,6 +213,11 @@ const innovation = computed(() => {
 @media (max-width: 900px) {
   .pair-grid {
     grid-template-columns: 1fr;
+  }
+
+  .card-footer {
+    flex-wrap: wrap;
+    row-gap: 0.45rem;
   }
 }
 
