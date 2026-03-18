@@ -51,6 +51,7 @@ const titleDarkSrc = computed(() =>
   scroll-margin-top: 90px;
   padding: 1.5rem 0 2.25rem;
   max-width: 1040px;
+  margin: 0 auto;
 }
 
 .lead {

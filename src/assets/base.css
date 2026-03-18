@@ -134,10 +134,12 @@ body {
 
 .section-title-image {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 0 0.7rem;
   line-height: 1;
+  color: var(--section-card-border);
 }
 
 .title-image {
