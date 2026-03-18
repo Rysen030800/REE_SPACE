@@ -45,6 +45,13 @@
   --nav-link-active: rgba(0, 0, 0, 0.92);
 
   --section-gap: 160px;
+  --font-subtitle:
+    "Space Grotesk",
+    "Manrope",
+    "Avenir Next",
+    "SF Pro Display",
+    "Segoe UI",
+    sans-serif;
 }
 
 :root[data-theme='dark'] {

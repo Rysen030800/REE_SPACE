@@ -21,7 +21,54 @@ function pick(value: { zh: string; en: string }) {
 
 const carouselPhotos = computed(() => [...photography, ...photography])
 const albumRef = ref<HTMLElement | null>(null)
+const trackRef = ref<HTMLElement | null>(null)
 let focusRaf: number | null = null
+let marqueeRaf: number | null = null
+let marqueeLastTs = 0
+let marqueeOffset = 0
+let marqueeSpeed = 78
+let marqueeTargetSpeed = 78
+let reduceMotion = false
+
+function setMarqueeHover(hovered: boolean) {
+  marqueeTargetSpeed = hovered ? 0 : 78
+}
+
+function startMarqueeLoop() {
+  const tick = (ts: number) => {
+    const track = trackRef.value
+    if (!track || reduceMotion) {
+      marqueeRaf = window.requestAnimationFrame(tick)
+      return
+    }
+
+    if (!marqueeLastTs) marqueeLastTs = ts
+    const dt = Math.max(0.001, (ts - marqueeLastTs) / 1000)
+    marqueeLastTs = ts
+
+    marqueeSpeed += (marqueeTargetSpeed - marqueeSpeed) * 0.065
+    marqueeOffset -= marqueeSpeed * dt
+
+    const loopWidth = track.scrollWidth / 2
+    if (loopWidth > 0) {
+      while (marqueeOffset <= -loopWidth) marqueeOffset += loopWidth
+      while (marqueeOffset > 0) marqueeOffset -= loopWidth
+      track.style.transform = `translateX(${marqueeOffset}px)`
+    }
+
+    marqueeRaf = window.requestAnimationFrame(tick)
+  }
+
+  if (marqueeRaf !== null) window.cancelAnimationFrame(marqueeRaf)
+  marqueeRaf = window.requestAnimationFrame(tick)
+}
+
+function stopMarqueeLoop() {
+  if (marqueeRaf !== null) {
+    window.cancelAnimationFrame(marqueeRaf)
+    marqueeRaf = null
+  }
+}
 
 function updatePhotoFocus() {
   const album = albumRef.value
@@ -63,10 +110,15 @@ function stopFocusLoop() {
 
 onMounted(async () => {
   await nextTick()
+  reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+  marqueeSpeed = reduceMotion ? 0 : 78
+  marqueeTargetSpeed = marqueeSpeed
+  startMarqueeLoop()
   startFocusLoop()
 })
 
 onBeforeUnmount(() => {
+  stopMarqueeLoop()
   stopFocusLoop()
 })
 </script>
@@ -87,9 +139,9 @@ onBeforeUnmount(() => {
       </svg>
       <span>{{ text.sections.creative.photography }}</span>
     </h3>
-    <div ref="albumRef" class="photo-album">
+    <div ref="albumRef" class="photo-album" @mouseenter="setMarqueeHover(true)" @mouseleave="setMarqueeHover(false)">
       <div class="photo-viewport">
-        <div class="photo-track">
+        <div ref="trackRef" class="photo-track">
           <article
             v-for="(p, idx) in carouselPhotos"
             :key="`${pick(p.title)}-${idx}`"
@@ -140,6 +192,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.45rem;
   color: var(--color-heading);
+  font-family: var(--font-subtitle);
 }
 
 .mini-icon {
@@ -154,11 +207,6 @@ onBeforeUnmount(() => {
   display: flex;
   gap: var(--photo-gap, 1.1rem);
   width: max-content;
-  animation: photo-marquee 22s linear infinite;
-}
-
-.photo-album:hover .photo-track {
-  animation-play-state: paused;
 }
 
 .photo-album {
@@ -343,20 +391,7 @@ onBeforeUnmount(() => {
   }
 }
 
-@keyframes photo-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-50% - (var(--photo-gap, 1.1rem) / 2)));
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .photo-track {
-    animation: none;
-  }
-
   .card {
     transition: none;
   }

@@ -357,6 +357,7 @@ onBeforeUnmount(() => {
   text-transform: none;
   color: var(--nav-link-hover);
   font-weight: 600;
+  font-family: var(--font-subtitle);
 }
 
 .group-title-with-icon,
@@ -367,6 +368,7 @@ onBeforeUnmount(() => {
   color: var(--color-heading);
   font-size: clamp(1.04rem, 1.15vw, 1.16rem);
   font-weight: 600;
+  font-family: var(--font-subtitle);
 }
 
 .mini-icon {
@@ -446,6 +448,7 @@ onBeforeUnmount(() => {
   font-size: clamp(1.03rem, 1.2vw, 1.1rem);
   line-height: 1.34;
   color: var(--color-heading);
+  font-family: var(--font-subtitle);
 }
 
 .desc {
@@ -556,6 +559,7 @@ onBeforeUnmount(() => {
   color: var(--color-heading);
   font-size: 1rem;
   line-height: 1.35;
+  font-family: var(--font-subtitle);
 }
 
 .coursework-card p {
@@ -604,6 +608,7 @@ onBeforeUnmount(() => {
   color: var(--color-heading);
   font-size: 1.08rem;
   line-height: 1.3;
+  font-family: var(--font-subtitle);
 }
 
 .coursework-close {
@@ -643,6 +648,7 @@ onBeforeUnmount(() => {
   margin: 0 0 0.5rem;
   color: var(--color-heading);
   font-size: 1.02rem;
+  font-family: var(--font-subtitle);
 }
 
 .muted {
