@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue'
 import { illustrations, photography } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -41,9 +41,11 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3)
 }
 
-function setCardRef(el: Element | null, index: number) {
+function setCardRef(el: Element | ComponentPublicInstance | null, index: number) {
   if (!el) return
-  cardRefs.value[index] = el as HTMLElement
+  const element = el instanceof Element ? el : ((el as ComponentPublicInstance).$el as Element | null)
+  if (!element) return
+  cardRefs.value[index] = element as HTMLElement
 }
 
 function measureOffsets() {
