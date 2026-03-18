@@ -18,6 +18,17 @@ function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
 }
 
+function projectImages(id: string) {
+  const base = `${import.meta.env.BASE_URL}experience/`
+  if (id === 'smart-city-intern') return [`${base}smart/edd20cd1-5421-4d17-9d10-ad9eaea83553.png`]
+  if (id === 'landscape-intern')
+    return [
+      `${base}landscape/%E5%B9%B3%E5%9D%9D%E5%8C%BA%E6%90%93%E7%99%BD%E6%B2%B3%E6%B2%BF%E7%BA%BF%E6%B5%B7%E7%BB%B5%E5%BB%BA%E8%AE%BE%E9%A1%B9%E7%9B%AE%E6%A6%82%E5%BF%B5%E8%A7%84%E5%88%92%E6%96%B0.png`,
+      `${base}landscape/%E5%B9%B3%E5%9D%9D%E5%8C%BA%E6%90%93%E7%99%BD%E6%B2%B3%E6%B2%BF%E7%BA%BF%E6%B5%B7%E7%BB%B5%E5%BB%BA%E8%AE%BE%E9%A1%B9%E7%9B%AE%E6%A6%82%E5%BF%B5%E8%A7%84%E5%88%92%E6%96%B0(1).png`,
+    ]
+  return []
+}
+
 function shouldSegmentDescription(_id: string) {
   return true
 }
@@ -105,16 +116,35 @@ const skillGroups = computed(() => {
     </div>
 
     <div class="group">
-      <p class="group-title">{{ internshipGroupTitle }}</p>
+      <p class="group-title group-title-with-icon">
+        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.8" d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" />
+          <path fill="none" stroke="currentColor" stroke-width="1.8" d="M4 7.5 12 12l8-4.5M12 12v9" />
+        </svg>
+        <span>{{ internshipGroupTitle }}</span>
+      </p>
       <div class="pair-grid internship-grid">
         <article v-for="p in internships" :key="p.id" class="card" :class="{ 'card-landscape': p.id === 'landscape-intern' }">
-          <h3 class="title">{{ pick(p.title) }}</h3>
-          <div v-if="shouldSegmentDescription(p.id)" class="desc-groups">
-            <p v-for="(block, idx) in splitNumberedSections(pick(p.description))" :key="`${p.id}-${idx}`" class="desc desc-block">
-              {{ block }}
-            </p>
+          <div class="internship-main">
+            <div class="internship-content">
+              <h3 class="title">{{ pick(p.title) }}</h3>
+              <div v-if="shouldSegmentDescription(p.id)" class="desc-groups">
+                <p v-for="(block, idx) in splitNumberedSections(pick(p.description))" :key="`${p.id}-${idx}`" class="desc desc-block">
+                  {{ block }}
+                </p>
+              </div>
+              <p v-else class="desc">{{ pick(p.description) }}</p>
+            </div>
+            <div v-if="projectImages(p.id).length" class="internship-visual-stack" aria-hidden="true">
+              <figure
+                v-for="(imageSrc, imageIdx) in projectImages(p.id)"
+                :key="`${p.id}-visual-${imageIdx}`"
+                class="internship-visual"
+              >
+                <img class="internship-visual-img" :src="imageSrc" alt="" loading="lazy" />
+              </figure>
+            </div>
           </div>
-          <p v-else class="desc">{{ pick(p.description) }}</p>
           <div class="card-footer">
             <ul class="tags">
               <li v-for="t in p.tags" :key="t" class="tag">{{ t }}</li>
@@ -126,7 +156,13 @@ const skillGroups = computed(() => {
     </div>
 
     <div class="group">
-      <p class="group-title">{{ innovationGroupTitle }}</p>
+      <p class="group-title group-title-with-icon">
+        <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="6.2" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path fill="none" stroke="currentColor" stroke-width="1.8" d="M5 20c0-3.8 3.1-6.8 7-6.8s7 3 7 6.8" />
+        </svg>
+        <span>{{ innovationGroupTitle }}</span>
+      </p>
       <div class="pair-grid innovation-grid">
         <article v-for="p in innovation" :key="p.id" class="card">
           <h3 class="title">{{ pick(p.title) }}</h3>
@@ -146,7 +182,13 @@ const skillGroups = computed(() => {
       </div>
     </div>
 
-    <h3 id="about" class="anchor">{{ text.sections.about.education }}</h3>
+    <h3 id="about" class="anchor anchor-with-icon">
+      <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="M3 9 12 4l9 5-9 5-9-5Z" />
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="M6 11.5V15c0 2.3 2.7 4 6 4s6-1.7 6-4v-3.5" />
+      </svg>
+      <span>{{ text.sections.about.education }}</span>
+    </h3>
     <div class="timeline">
       <article v-for="item in educationItems" :key="item.school" class="info-card">
         <div class="row">
@@ -157,7 +199,12 @@ const skillGroups = computed(() => {
       </article>
     </div>
 
-    <h3 class="anchor">{{ text.sections.about.skills }}</h3>
+    <h3 class="anchor anchor-with-icon">
+      <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="M21 7.5a4.5 4.5 0 0 1-6.7 3.9l-7.6 7.6-2.7.8.8-2.7 7.6-7.6A4.5 4.5 0 1 1 21 7.5Z" />
+      </svg>
+      <span>{{ text.sections.about.skills }}</span>
+    </h3>
     <div class="skills">
       <article v-for="group in skillGroups" :key="group.title" class="info-card">
         <h4>{{ group.title }}</h4>
@@ -197,6 +244,21 @@ const skillGroups = computed(() => {
   color: var(--nav-link-hover);
 }
 
+.group-title-with-icon,
+.anchor-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-heading);
+}
+
+.mini-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--color-heading);
+  flex: 0 0 auto;
+}
+
 .pair-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -225,6 +287,41 @@ const skillGroups = computed(() => {
   min-height: clamp(220px, 28vw, 264px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
   transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.internship-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.internship-content {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.internship-visual-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 0 0 clamp(180px, 22vw, 230px);
+  width: clamp(180px, 22vw, 230px);
+  align-self: center;
+}
+
+.internship-visual {
+  margin: 0;
+}
+
+.internship-visual-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: block;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--section-card-border);
+  background: var(--color-background);
 }
 
 .title {
@@ -379,6 +476,14 @@ const skillGroups = computed(() => {
   .card-footer {
     flex-wrap: wrap;
     row-gap: 0.45rem;
+  }
+
+  .internship-main {
+    margin-bottom: 0.55rem;
+  }
+
+  .internship-visual-stack {
+    display: none;
   }
 }
 

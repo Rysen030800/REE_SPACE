@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { favorites } from '../data/creative'
+import { favorites, musicAlbums } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
 
@@ -24,9 +24,24 @@ const titleDarkSrc = computed(() =>
     <p class="lead">{{ text.sections.life.lead }}</p>
 
     <div class="fav-grid">
-      <div class="fav-card">
+      <div class="fav-card music-card">
         <h4>{{ text.sections.life.music }}</h4>
-        <ul class="list">
+        <div class="album-mosaic">
+          <article v-for="album in musicAlbums" :key="`${album.artist}-${album.title}`" class="album-tile">
+            <img
+              v-if="album.image"
+              class="album-cover"
+              :src="album.image"
+              :alt="`${album.artist} - ${album.title}`"
+              loading="lazy"
+            />
+            <div v-else class="album-placeholder">
+              <strong>{{ album.title }}</strong>
+              <span>{{ album.artist }}</span>
+            </div>
+          </article>
+        </div>
+        <ul class="list music-list">
           <li v-for="x in favorites.music" :key="x">{{ x }}</li>
         </ul>
       </div>
@@ -65,6 +80,10 @@ const titleDarkSrc = computed(() =>
   gap: 1rem;
 }
 
+.music-card {
+  grid-column: 1 / -1;
+}
+
 .fav-card {
   border: 1px solid var(--section-card-border);
   border-radius: 14px;
@@ -83,6 +102,56 @@ const titleDarkSrc = computed(() =>
   margin: 0;
   padding-left: 1.1rem;
   opacity: 1;
+}
+
+.music-list {
+  margin-top: 0.75rem;
+}
+
+.album-mosaic {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 0.45rem;
+}
+
+.album-tile {
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+}
+
+.album-cover,
+.album-placeholder {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.album-cover {
+  object-fit: cover;
+}
+
+.album-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.35rem;
+  font-size: 0.55rem;
+  line-height: 1.1;
+  color: var(--color-heading);
+}
+
+.album-placeholder strong {
+  font-weight: 600;
+}
+
+.album-placeholder span {
+  opacity: 0.75;
 }
 
 :root[data-theme='dark'] .fav-card {
@@ -112,6 +181,10 @@ const titleDarkSrc = computed(() =>
 
   .fav-card {
     padding: 1.1rem;
+  }
+
+  .album-mosaic {
+    grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
   }
 }
 

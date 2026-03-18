@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { illustrations, photography } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -19,120 +19,55 @@ function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
 }
 
-function pickOpt(value: { zh: string; en: string } | undefined) {
-  return value ? pick(value) : undefined
-}
+const carouselPhotos = computed(() => [...photography, ...photography])
+const albumRef = ref<HTMLElement | null>(null)
+let focusRaf: number | null = null
 
-type Offset = { dx: number; dy: number }
+function updatePhotoFocus() {
+  const album = albumRef.value
+  if (!album) return
 
-const gridRef = ref<HTMLElement | null>(null)
-const photoTitleRef = ref<HTMLElement | null>(null)
-const cardRefs = ref<HTMLElement[]>([])
-const offsets = ref<Offset[]>([])
-const settleProgress = ref(0)
-const disablePhotoMotion = ref(false)
-let rafId = 0
-let reduceMotion = false
+  const albumRect = album.getBoundingClientRect()
+  const albumCenter = albumRect.left + albumRect.width / 2
+  const effectRadius = albumRect.width * 0.26
+  const cards = album.querySelectorAll<HTMLElement>('.photo-card')
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
-}
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3)
-}
-
-function setCardRef(el: Element | ComponentPublicInstance | null, index: number) {
-  if (!el) return
-  const element = el instanceof Element ? el : ((el as ComponentPublicInstance).$el as Element | null)
-  if (!element) return
-  cardRefs.value[index] = element as HTMLElement
-}
-
-function measureOffsets() {
-  if (!gridRef.value || cardRefs.value.length === 0) return
-
-  const centerX = gridRef.value.clientWidth / 2
-  const centerY = gridRef.value.clientHeight / 2
-
-  offsets.value = cardRefs.value.map((card) => {
-    const cardCenterX = card.offsetLeft + card.offsetWidth / 2
-    const cardCenterY = card.offsetTop + card.offsetHeight / 2
-    return {
-      dx: centerX - cardCenterX,
-      dy: centerY - cardCenterY,
-    }
+  cards.forEach((card) => {
+    const rect = card.getBoundingClientRect()
+    const cardCenter = rect.left + rect.width / 2
+    const distance = Math.abs(cardCenter - albumCenter)
+    const focus = Math.max(0, 1 - distance / effectRadius)
+    card.style.setProperty('--focus', focus.toFixed(3))
+    card.style.setProperty('--focus-z', String(Math.round(focus * 100) + 1))
   })
 }
 
-function updateProgress() {
-  if (!gridRef.value || !photoTitleRef.value) return
-
-  disablePhotoMotion.value = window.innerWidth <= 900
-
-  if (reduceMotion || disablePhotoMotion.value) {
-    settleProgress.value = 1
-    return
+function startFocusLoop() {
+  const tick = () => {
+    updatePhotoFocus()
+    focusRaf = window.requestAnimationFrame(tick)
   }
 
-  const titleRect = photoTitleRef.value.getBoundingClientRect()
-  const gridRect = gridRef.value.getBoundingClientRect()
-  const vh = window.innerHeight || 1
-
-  const scrollY = window.scrollY || window.pageYOffset || 0
-  const startScroll = scrollY + titleRect.top - vh
-  const endScroll = scrollY + (gridRect.top + gridRect.height / 2) - vh * 0.5
-  const span = Math.max(endScroll - startScroll, 1)
-  const raw = (scrollY - startScroll) / span
-  settleProgress.value = clamp(raw, 0, 1)
+  if (focusRaf !== null) {
+    window.cancelAnimationFrame(focusRaf)
+  }
+  focusRaf = window.requestAnimationFrame(tick)
 }
 
-function requestUpdate() {
-  if (rafId) return
-  rafId = window.requestAnimationFrame(() => {
-    rafId = 0
-    updateProgress()
-  })
-}
-
-function requestMeasure() {
-  nextTick(() => {
-    measureOffsets()
-    updateProgress()
-  })
-}
-
-function photoCardStyle(index: number): Record<string, string> {
-  const offset = offsets.value[index] ?? { dx: 0, dy: 0 }
-  const t = easeOutCubic(settleProgress.value)
-
-  const tx = offset.dx * (1 - t)
-  const ty = offset.dy * (1 - t)
-  const scale = 0.52 + 0.48 * t
-  const rotate = (index % 2 === 0 ? -1 : 1) * (1 - t) * 6
-  const z = Math.round((1 - t) * (200 - index) + t * (index + 1))
-
-  return {
-    transform: `translate(${tx}px, ${ty}px) scale(${scale}) rotate(${rotate}deg)`,
-    opacity: '1',
-    zIndex: `${z}`,
+function stopFocusLoop() {
+  if (focusRaf !== null) {
+    window.cancelAnimationFrame(focusRaf)
+    focusRaf = null
   }
 }
 
-onMounted(() => {
-  reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
-  requestMeasure()
-
-  if (!reduceMotion) {
-    window.addEventListener('scroll', requestUpdate, { passive: true })
-    window.addEventListener('resize', requestMeasure)
-  }
+onMounted(async () => {
+  await nextTick()
+  startFocusLoop()
 })
 
 onBeforeUnmount(() => {
-  if (rafId) window.cancelAnimationFrame(rafId)
-  window.removeEventListener('scroll', requestUpdate)
-  window.removeEventListener('resize', requestMeasure)
+  stopFocusLoop()
 })
 </script>
 
@@ -144,33 +79,41 @@ onBeforeUnmount(() => {
     </h2>
     <p class="lead">{{ text.sections.creative.lead }}</p>
 
-    <h3 id="photography" ref="photoTitleRef" class="anchor">{{ text.sections.creative.photography }}</h3>
-    <div class="photo-album">
-      <div ref="gridRef" class="photo-grid">
-        <article
-          v-for="(p, idx) in photography"
-          :key="pick(p.title)"
-          class="photo-card"
-          :style="photoCardStyle(idx)"
-          :ref="(el) => setCardRef(el, idx)"
-        >
-          <div class="photo-media">
-            <img v-if="p.image" class="photo-img" :src="p.image" :alt="pick(p.title)" loading="lazy" @load="requestMeasure" />
-          </div>
-        </article>
+    <h3 id="photography" class="anchor anchor-with-icon">
+      <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3.5" y="7.5" width="17" height="12" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <circle cx="12" cy="13.5" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="M8 7.5 9.5 5h5L16 7.5" />
+      </svg>
+      <span>{{ text.sections.creative.photography }}</span>
+    </h3>
+    <div ref="albumRef" class="photo-album">
+      <div class="photo-viewport">
+        <div class="photo-track">
+          <article
+            v-for="(p, idx) in carouselPhotos"
+            :key="`${pick(p.title)}-${idx}`"
+            class="photo-card"
+          >
+            <div class="photo-media">
+              <img v-if="p.image" class="photo-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+            </div>
+          </article>
+        </div>
       </div>
     </div>
 
-    <h3 id="illustration" class="anchor">{{ text.sections.creative.illustration }}</h3>
-    <div class="grid">
-      <article v-for="p in illustrations" :key="pick(p.title)" class="card">
-        <img v-if="p.image" class="img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
-        <div v-else class="img placeholder" aria-hidden="true" />
-        <div class="row">
-          <div class="name">{{ pick(p.title) }}</div>
-          <div v-if="pickOpt(p.meta)" class="meta">{{ pickOpt(p.meta) }}</div>
-        </div>
-        <p v-if="pickOpt(p.description)" class="desc">{{ pickOpt(p.description) }}</p>
+    <h3 id="illustration" class="anchor anchor-with-icon">
+      <svg class="mini-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="M4 19.5h4l8.8-8.8-4-4L4 15.5v4Z" />
+        <path fill="none" stroke="currentColor" stroke-width="1.8" d="m13.2 6.5 1.8-1.8a2 2 0 0 1 2.8 0l1.5 1.5a2 2 0 0 1 0 2.8l-1.8 1.8" />
+      </svg>
+      <span>{{ text.sections.creative.illustration }}</span>
+    </h3>
+    <div class="illustration-grid">
+      <article v-for="p in illustrations" :key="pick(p.title)" class="illustration-item">
+        <img v-if="p.image" class="illustration-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+        <div v-else class="illustration-img placeholder" aria-hidden="true" />
       </article>
     </div>
   </section>
@@ -192,37 +135,89 @@ onBeforeUnmount(() => {
   margin: 1.25rem 0 0.75rem;
 }
 
-.photo-grid {
+.anchor-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-heading);
+}
+
+.mini-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--color-heading);
+  flex: 0 0 auto;
+}
+
+.photo-track {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
+  display: flex;
+  gap: var(--photo-gap, 1.1rem);
+  width: max-content;
+  animation: photo-marquee 22s linear infinite;
+}
+
+.photo-album:hover .photo-track {
+  animation-play-state: paused;
 }
 
 .photo-album {
+  --photo-gap: 2.6rem;
   margin: 0.25rem 0 1.2rem;
-  padding: 0.85rem;
-  border: 1px solid var(--section-card-border);
-  border-radius: 16px;
-  background: var(--color-background-soft);
+  padding: 0;
+  overflow: visible;
+}
+
+.photo-viewport {
+  overflow: visible;
 }
 
 .photo-card {
+  position: relative;
+  width: clamp(190px, 19vw, 260px);
+  flex: 0 0 auto;
+  --focus: 0;
+  --focus-z: 1;
+  transform: scale(calc(1 + var(--focus) * 0.24));
+  transition: transform 70ms ease-out;
   transform-origin: center center;
-  will-change: transform, opacity;
+  z-index: var(--focus-z);
 }
 
 .photo-img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 .photo-media {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.illustration-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.illustration-item {
+  margin: 0;
+  border: 1px solid var(--section-card-border);
+  border-radius: 14px;
+  padding: 0.6rem;
+  background: var(--color-background-soft);
+}
+
+.illustration-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  object-fit: cover;
 }
 
 .grid {
@@ -293,19 +288,35 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 1100px) {
-  .photo-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .photo-card {
+    width: clamp(170px, 27vw, 230px);
   }
 }
 
 @media (max-width: 900px) {
-  .photo-grid {
+  .photo-album {
+    --photo-gap: 2rem;
+  }
+
+  .photo-card {
+    width: clamp(150px, 35vw, 200px);
+  }
+
+  .illustration-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
-  .photo-grid {
+  .photo-album {
+    --photo-gap: 1.45rem;
+  }
+
+  .photo-card {
+    width: clamp(135px, 56vw, 180px);
+  }
+
+  .illustration-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -315,7 +326,7 @@ onBeforeUnmount(() => {
     padding: 1.8rem 0;
   }
 
-  .photo-grid {
+  .illustration-grid {
     gap: 0.8rem;
   }
 
@@ -332,7 +343,20 @@ onBeforeUnmount(() => {
   }
 }
 
+@keyframes photo-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - (var(--photo-gap, 1.1rem) / 2)));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .photo-track {
+    animation: none;
+  }
+
   .card {
     transition: none;
   }
