@@ -629,6 +629,13 @@ onBeforeUnmount(() => {
   font-family: var(--font-subtitle);
 }
 
+.internship-grid .title,
+.innovation-grid .title,
+.project-feature-card .title,
+.coursework-card h4 {
+  font-weight: 800;
+}
+
 .desc {
   margin: 0 0 0.75rem;
   line-height: 1.52;
