@@ -54,6 +54,60 @@ const aiPortfolioTitle = computed(() =>
     ? 'AI 驱动开发：个人数字化作品集构建'
     : 'AI-Driven Development: Personal Digital Portfolio Construction',
 )
+const aiFeatureSummary = computed(() =>
+  ui.lang === 'zh'
+    ? {
+        title: 'AI 驱动开发：从 0 到 1 构建个人品牌数字化作品集',
+        role: '项目角色： 产品负责人 (Product Owner) & 提示词工程师 (Prompt Engineer)',
+        stack: '技术栈： Next.js / Tailwind CSS / Vibe Coding (Cursor) / Vercel',
+      }
+    : {
+        title: 'AI-Driven Development: Building a Personal Brand Portfolio from 0 to 1',
+        role: 'Role: Product Owner & Prompt Engineer',
+        stack: 'Stack: Next.js / Tailwind CSS / Vibe Coding (Cursor) / Vercel',
+      },
+)
+const aiFeatureImage = `${import.meta.env.BASE_URL}experience/ai/dfa05355-8d97-4de0-80f1-4e777de6a33b.png`
+
+const aiFeatureDetail = computed(() =>
+  ui.lang === 'zh'
+    ? `【Situation | 项目背景】
+作为一名跨学科背景（景观设计转产品经理）的学习者，需要一个能够整合多维能力（逻辑思维、审美下限、技术理解力）的数字化窗口。在零前端工程背景下，挑战通过 AI 协作编程（Vibe Coding）在 7 天内完成个人官网的闭环开发与部署。
+
+【Task | 核心任务】
+需求定义： 快速搭建个人网页，丰富视觉意象，完善信息架构。
+开发交付： 利用 Vibe Coding 模式，通过高质量 Prompt 驱动 AI 交付全响应式站点。
+逻辑迁移： 将建筑学的空间规划逻辑转化为网页的布局逻辑，确保跨设备的交互一致性。
+
+【Action | 关键行动】
+建筑设计能力的逻辑迁移： 将网页排版视为“数字化场地规划”。类比建筑图纸中的“总平-分层-详图”逻辑，对网页进行模块化需求拆解。通过定义清晰的视觉层级（Visual Hierarchy），确保复杂信息在不同屏幕尺度下的可读性与秩序感。
+Prompt 驱动的功能实现： 采用结构化提示词引导 AI 完成底层代码编写。针对由于 CSS 优先级导致的字体渲染与字号偏差问题，通过浏览器开发者工具（F12）进行精准定位，并引导 AI 采用变量覆盖与优先级修正策略进行修复。
+用户路径与体验优化： 运用设计师对“流线”的敏感度，设计简洁直观的页面跳转逻辑。在缺乏代码基础的情况下，通过反复调试 Prompt，实现了平滑滚动（Smooth Scroll）与局部元素浮现效果，提升访客的“游览”体验。
+全链路部署与迭代： 独立完成从 GitHub 仓库管理到 Vercel 持续集成/持续部署 (CI/CD) 的全过程，实现站点的全球访问与快速版本更新。
+
+【Result | 项目成果】
+高效交付： 跨越技术鸿沟，在 7 天内实现了从 0 到 1 的高质量产品交付，开发周期较传统学习模式显著缩短。
+能力验证： 成功验证了将建筑工程逻辑迁移至软件产品定义的可行性，展示了极强的逻辑建模能力和 AI 工具应用水平。
+品牌沉淀： 构建了一个具备深度个人印记的数字化场域，单周内通过 AI 协作完成 20+ 次功能迭代与审美优化。`
+    : `【Situation | Project Context】
+As an interdisciplinary learner (transitioning from landscape design to product management), I needed a digital window that could integrate multiple competencies: logical thinking, visual judgment, and technical understanding. With no frontend engineering background, I set a 7-day challenge to complete end-to-end development and deployment of a personal website through AI-assisted coding (Vibe Coding).
+
+【Task | Core Objectives】
+Requirement definition: rapidly build a personal website, enrich visual expression, and refine information architecture.
+Development delivery: use Vibe Coding and high-quality prompts to drive AI in delivering a fully responsive site.
+Logic migration: translate architectural spatial-planning logic into web layout logic and ensure consistent cross-device interaction.
+
+【Action | Key Actions】
+Logic migration from architectural design: treated web layout as “digital site planning.” Following the “master plan - layered plan - detail drawing” logic from architecture, I modularized requirements and defined a clear visual hierarchy to ensure readability and order across screen sizes.
+Prompt-driven implementation: used structured prompts to guide AI in coding. For font-rendering and size deviations caused by CSS specificity, I diagnosed issues through browser dev tools (F12) and guided AI to fix them with variable overrides and specificity adjustments.
+User flow and experience optimization: leveraged design sensitivity to “circulation” to build intuitive navigation logic. Despite limited coding background, I iterated prompts repeatedly to achieve smooth scrolling and localized reveal effects, improving the browsing experience.
+End-to-end deployment and iteration: independently completed the full process from GitHub repository management to Vercel CI/CD, enabling global access and rapid updates.
+
+【Result | Outcomes】
+Efficient delivery: crossed the technical gap and delivered a high-quality product from 0 to 1 within 7 days, significantly shortening the cycle compared with traditional learning paths.
+Capability validation: verified the feasibility of migrating architectural-engineering logic to software product definition, demonstrating strong modeling ability and AI-tool proficiency.
+Brand consolidation: built a digital space with a strong personal imprint, completing 20+ functional and aesthetic iterations in one week via AI collaboration.`,
+)
 
 const internships = computed(() => {
   const smartCity = projects.find((p) => p.id === 'smart-city-intern')
@@ -146,6 +200,7 @@ const courseworkItems: CourseworkItem[] = [
 ]
 
 const activeCourseworkId = ref<string | null>(null)
+const aiFeatureOpen = ref(false)
 
 const activeCoursework = computed(() =>
   courseworkItems.find((item) => item.id === activeCourseworkId.value) ?? null,
@@ -162,10 +217,18 @@ function closeCoursework() {
   activeCourseworkId.value = null
 }
 
-watch(activeCourseworkId, (id) => {
+function openAiFeature() {
+  aiFeatureOpen.value = true
+}
+
+function closeAiFeature() {
+  aiFeatureOpen.value = false
+}
+
+watch([activeCourseworkId, aiFeatureOpen], ([id, aiOpen]) => {
   if (typeof document === 'undefined') return
 
-  if (id) {
+  if (id || aiOpen) {
     bodyOverflowBeforeModal = document.body.style.overflow
     bodyPaddingRightBeforeModal = document.body.style.paddingRight
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
@@ -241,9 +304,16 @@ onBeforeUnmount(() => {
         </svg>
         <span>{{ innovationGroupTitle }}</span>
       </p>
-      <article class="card project-feature-card">
-        <h3 class="title">{{ aiPortfolioTitle }}</h3>
-      </article>
+      <button type="button" class="card project-feature-card" @click="openAiFeature">
+        <div class="project-feature-main">
+          <div class="project-feature-copy">
+            <h3 class="title">{{ aiFeatureSummary.title }}</h3>
+            <p class="desc project-feature-line">{{ aiFeatureSummary.role }}</p>
+            <p class="desc project-feature-line">{{ aiFeatureSummary.stack }}</p>
+          </div>
+          <img class="project-feature-image" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
+        </div>
+      </button>
       <div class="pair-grid innovation-grid">
         <article v-for="p in innovation" :key="p.id" class="card">
           <h3 class="title">{{ pick(p.title) }}</h3>
@@ -325,6 +395,26 @@ onBeforeUnmount(() => {
         </div>
       </article>
     </div>
+
+    <div
+      v-if="aiFeatureOpen"
+      class="coursework-overlay"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="aiPortfolioTitle"
+      @click.self="closeAiFeature"
+    >
+      <article class="coursework-modal project-feature-modal">
+        <header class="coursework-modal-head">
+          <h4>{{ aiFeatureSummary.title }}</h4>
+          <button type="button" class="coursework-close" @click="closeAiFeature">×</button>
+        </header>
+        <div class="coursework-modal-body">
+          <img class="project-feature-image project-feature-image-modal" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
+          <p>{{ aiFeatureDetail }}</p>
+        </div>
+      </article>
+    </div>
   </section>
 </template>
 
@@ -397,9 +487,51 @@ onBeforeUnmount(() => {
   min-height: 420px;
 }
 
-.project-feature-card {
-  min-height: 0;
+.card.project-feature-card {
+  min-height: 0 !important;
   margin: 0 0 1rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.95rem 1rem 1rem;
+}
+
+.project-feature-line {
+  margin: 0.2rem 0 0;
+}
+
+.project-feature-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.project-feature-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.project-feature-image {
+  width: clamp(260px, 30vw, 420px);
+  flex: 0 0 clamp(260px, 30vw, 420px);
+  display: block;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--section-card-border);
+  object-fit: cover;
+}
+
+.project-feature-image-modal {
+  width: min(620px, 100%);
+  max-width: 620px;
+  margin: 0 auto 0.8rem;
+  flex: 0 0 auto;
+}
+
+.project-feature-modal {
+  animation: project-feature-zoom-in 0.52s cubic-bezier(0.2, 0.78, 0.2, 1) forwards;
+  transform: scale(0.9);
 }
 
 .card {
@@ -726,6 +858,16 @@ onBeforeUnmount(() => {
   .coursework-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .project-feature-main {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-feature-image {
+    width: min(460px, 100%);
+    flex-basis: auto;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -803,6 +945,15 @@ onBeforeUnmount(() => {
   }
   to {
     transform: scale(1) rotateY(0);
+  }
+}
+
+@keyframes project-feature-zoom-in {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
   }
 }
 </style>

@@ -70,7 +70,7 @@ export const copy: Record<
         resumeHint: '将 PDF 放到 REE_SPACE/public/resume.pdf 即可。',
       },
       contact: {
-        title: '联系',
+        title: '我有根，但我流动',
         lead: '欢迎通过以下方式联系我。',
         phone: '电话',
         email: '邮箱',
@@ -116,7 +116,7 @@ export const copy: Record<
         resumeHint: 'Put your PDF at REE_SPACE/public/resume.pdf.',
       },
       contact: {
-        title: 'Contact',
+        title: "I' m rooted, but I flow",
         lead: 'Pick any method below.',
         phone: 'Phone',
         email: 'Email',
