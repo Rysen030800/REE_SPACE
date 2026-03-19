@@ -174,3 +174,19 @@ export const musicAlbums: MusicAlbum[] = musicAlbumFiles.map((filename) => ({
   title: filename,
   image: `/life/music/${encodeURIComponent(filename)}`,
 }))
+
+const movieAlbumFiles = [
+  '初步举证 Prima Facie.jpg',
+  '孤独的美食家 孤独のグルメ.jpg',
+  "还有明天 There‘s still tomorrow.jpg",
+  '黎明的一切 夜明けのすべて.jpg',
+  '猫猫的奇幻漂流 Straume.jpg',
+  '女人世界 Chinatown Cha-Cha.JPG',
+  '我仍在此 Ainda estou aqui.jpg',
+  '战场上的快乐圣诞 Merry Christmas Mr. Lawrence.jpg',
+] as const
+
+export const movieAlbums: MusicAlbum[] = movieAlbumFiles.map((filename) => ({
+  title: filename,
+  image: `/life/movie/${encodeURIComponent(filename)}`,
+}))

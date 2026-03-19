@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { CSSProperties } from 'vue'
-import { favorites, musicAlbums } from '../data/creative'
+import { favorites, movieAlbums, musicAlbums } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
 
@@ -9,10 +9,13 @@ const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
 
 const activeAlbum = ref(0)
+const activeMovie = ref(0)
 const autoplay = true
 let autoTimer: number | null = null
+let movieAutoTimer: number | null = null
 
 const currentAlbum = computed(() => musicAlbums[activeAlbum.value] ?? musicAlbums[0])
+const currentMovie = computed(() => movieAlbums[activeMovie.value] ?? movieAlbums[0])
 
 function nextAlbum() {
   if (musicAlbums.length === 0) return
@@ -24,10 +27,27 @@ function prevAlbum() {
   activeAlbum.value = (activeAlbum.value - 1 + musicAlbums.length) % musicAlbums.length
 }
 
+function nextMovie() {
+  if (movieAlbums.length === 0) return
+  activeMovie.value = (activeMovie.value + 1) % movieAlbums.length
+}
+
+function prevMovie() {
+  if (movieAlbums.length === 0) return
+  activeMovie.value = (activeMovie.value - 1 + movieAlbums.length) % movieAlbums.length
+}
+
 function pauseAutoplay() {
   if (autoTimer !== null) {
     window.clearInterval(autoTimer)
     autoTimer = null
+  }
+}
+
+function pauseMovieAutoplay() {
+  if (movieAutoTimer !== null) {
+    window.clearInterval(movieAutoTimer)
+    movieAutoTimer = null
   }
 }
 
@@ -37,15 +57,20 @@ function startAutoplay() {
   autoTimer = window.setInterval(nextAlbum, 4200)
 }
 
-function signedDistance(index: number) {
-  const total = musicAlbums.length
+function startMovieAutoplay() {
+  if (!autoplay || movieAlbums.length <= 1) return
+  pauseMovieAutoplay()
+  movieAutoTimer = window.setInterval(nextMovie, 4200)
+}
+
+function signedDistance(index: number, activeIndex: number, total: number) {
   if (total <= 1) return 0
-  const raw = (index - activeAlbum.value + total) % total
+  const raw = (index - activeIndex + total) % total
   return raw > total / 2 ? raw - total : raw
 }
 
-function cardTransform(index: number): CSSProperties {
-  const d = signedDistance(index)
+function cardTransform(index: number, activeIndex: number, total: number): CSSProperties {
+  const d = signedDistance(index, activeIndex, total)
   const abs = Math.abs(d)
 
   if (abs > 4) {
@@ -76,10 +101,12 @@ function cardTransform(index: number): CSSProperties {
 
 onMounted(() => {
   startAutoplay()
+  startMovieAutoplay()
 })
 
 onBeforeUnmount(() => {
   pauseAutoplay()
+  pauseMovieAutoplay()
 })
 </script>
 
@@ -98,7 +125,7 @@ onBeforeUnmount(() => {
               :key="`${album.title}-${idx}`"
               class="album-frame"
               :class="{ 'is-active': idx === activeAlbum }"
-              :style="cardTransform(idx)"
+              :style="cardTransform(idx, activeAlbum, musicAlbums.length)"
             >
               <img class="album-cover" :src="album.image" :alt="album.title" loading="lazy" />
             </article>
@@ -115,9 +142,26 @@ onBeforeUnmount(() => {
 
       <div class="fav-card movies-card">
         <h4>{{ text.sections.life.movies }}</h4>
-        <ul class="list">
-          <li v-for="x in favorites.movies" :key="x">{{ x }}</li>
-        </ul>
+        <div class="album-showcase" @mouseenter="pauseMovieAutoplay" @mouseleave="startMovieAutoplay">
+          <div class="album-stage">
+            <article
+              v-for="(movie, idx) in movieAlbums"
+              :key="`${movie.title}-${idx}`"
+              class="album-frame"
+              :class="{ 'is-active': idx === activeMovie }"
+              :style="cardTransform(idx, activeMovie, movieAlbums.length)"
+            >
+              <img class="album-cover" :src="movie.image" :alt="movie.title" loading="lazy" />
+            </article>
+          </div>
+          <div class="album-panel">
+            <p class="album-name">{{ currentMovie?.title }}</p>
+            <div class="album-controls">
+              <button type="button" class="album-btn" @click="prevMovie" aria-label="Previous movie">&larr;</button>
+              <button type="button" class="album-btn" @click="nextMovie" aria-label="Next movie">&rarr;</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="fav-card tv-card">
