@@ -7,14 +7,6 @@ import { useUiStore } from '../stores/ui'
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
 
-const titleBase = `${import.meta.env.BASE_URL}title/`
-const titleLightSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E5%88%9B%E4%BD%9C1.png` : `${titleBase}works%201.png`,
-)
-const titleDarkSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E5%88%9B%E4%BD%9C%202.png` : `${titleBase}works%202.png`,
-)
-
 function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
 }
@@ -125,10 +117,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="creative" class="section">
-    <h2 class="section-title-image" :aria-label="text.sections.creative.title">
-      <img class="title-image title-image-light" :src="titleLightSrc" :alt="text.sections.creative.title" />
-      <img class="title-image title-image-dark" :src="titleDarkSrc" :alt="text.sections.creative.title" />
-    </h2>
+    <h2 class="section-title-text" :class="ui.lang === 'zh' ? 'noto-sans-sc-heavy' : 'bungee-regular'">{{ text.sections.creative.title }}</h2>
     <p class="lead">{{ text.sections.creative.lead }}</p>
 
     <h3 id="photography" class="anchor anchor-with-icon">
@@ -191,14 +180,17 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--color-heading);
-  font-family: var(--font-subtitle);
+  color: var(--section-subtitle-color);
+  font-family: var(--font-section-subtitle);
+  font-weight: var(--font-section-subtitle-weight);
+  font-style: var(--font-section-subtitle-style);
+  font-size: var(--section-subtitle-size);
 }
 
 .mini-icon {
   width: 1.05rem;
   height: 1.05rem;
-  color: var(--color-heading);
+  color: var(--section-subtitle-color);
   flex: 0 0 auto;
 }
 

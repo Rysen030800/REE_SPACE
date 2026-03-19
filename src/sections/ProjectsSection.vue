@@ -6,13 +6,6 @@ import { useUiStore } from '../stores/ui'
 
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
-const titleBase = `${import.meta.env.BASE_URL}title/`
-const titleLightSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E7%BB%8F%E5%8E%861.png` : `${titleBase}experience%201.png`,
-)
-const titleDarkSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E7%BB%8F%E5%8E%86%202.png` : `${titleBase}experience%202.png`,
-)
 
 function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
@@ -56,6 +49,11 @@ function splitNumberedSections(content: string) {
 const internshipGroupTitle = computed(() => (ui.lang === 'zh' ? '实习' : 'Internships'))
 
 const innovationGroupTitle = computed(() => (ui.lang === 'zh' ? '项目' : 'Projects'))
+const aiPortfolioTitle = computed(() =>
+  ui.lang === 'zh'
+    ? 'AI 驱动开发：个人数字化作品集构建'
+    : 'AI-Driven Development: Personal Digital Portfolio Construction',
+)
 
 const internships = computed(() => {
   const smartCity = projects.find((p) => p.id === 'smart-city-intern')
@@ -192,10 +190,7 @@ onBeforeUnmount(() => {
 <template>
   <section id="projects" class="section">
     <div class="head">
-      <h2 class="section-title-image" :aria-label="text.sections.projects.title">
-        <img class="title-image title-image-light" :src="titleLightSrc" :alt="text.sections.projects.title" />
-        <img class="title-image title-image-dark" :src="titleDarkSrc" :alt="text.sections.projects.title" />
-      </h2>
+      <h2 class="section-title-text" :class="ui.lang === 'zh' ? 'noto-sans-sc-heavy' : 'bungee-regular'">{{ text.sections.projects.title }}</h2>
     </div>
 
     <div class="group">
@@ -246,6 +241,9 @@ onBeforeUnmount(() => {
         </svg>
         <span>{{ innovationGroupTitle }}</span>
       </p>
+      <article class="card project-feature-card">
+        <h3 class="title">{{ aiPortfolioTitle }}</h3>
+      </article>
       <div class="pair-grid innovation-grid">
         <article v-for="p in innovation" :key="p.id" class="card">
           <h3 class="title">{{ pick(p.title) }}</h3>
@@ -333,15 +331,16 @@ onBeforeUnmount(() => {
 <style scoped>
 .section {
   scroll-margin-top: 90px;
-  padding: 1.5rem 0;
+  padding: 2.2rem 0 1.5rem;
 }
 
 .head {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-bottom: 1.1rem;
 }
 
@@ -351,13 +350,14 @@ onBeforeUnmount(() => {
 
 .group-title {
   margin: 0 0 0.55rem;
-  font-size: clamp(1.04rem, 1.15vw, 1.16rem);
+  font-size: var(--section-subtitle-size);
   line-height: 1.2;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--nav-link-hover);
-  font-weight: 600;
-  font-family: var(--font-subtitle);
+  color: var(--section-subtitle-color);
+  font-weight: var(--font-section-subtitle-weight);
+  font-family: var(--font-section-subtitle);
+  font-style: var(--font-section-subtitle-style);
 }
 
 .group-title-with-icon,
@@ -365,16 +365,17 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--color-heading);
-  font-size: clamp(1.04rem, 1.15vw, 1.16rem);
-  font-weight: 600;
-  font-family: var(--font-subtitle);
+  color: var(--section-subtitle-color);
+  font-size: var(--section-subtitle-size);
+  font-weight: var(--font-section-subtitle-weight);
+  font-family: var(--font-section-subtitle);
+  font-style: var(--font-section-subtitle-style);
 }
 
 .mini-icon {
   width: 1.05rem;
   height: 1.05rem;
-  color: var(--color-heading);
+  color: var(--section-subtitle-color);
   flex: 0 0 auto;
 }
 
@@ -394,6 +395,11 @@ onBeforeUnmount(() => {
 
 .card-landscape {
   min-height: 420px;
+}
+
+.project-feature-card {
+  min-height: 0;
+  margin: 0 0 1rem;
 }
 
 .card {
@@ -724,11 +730,7 @@ onBeforeUnmount(() => {
 
 @media (min-width: 1200px) {
   .section {
-    padding: 1.8rem 0;
-  }
-
-  .group-title {
-    font-size: clamp(1.08rem, 1.05vw, 1.2rem);
+    padding: 2.6rem 0 1.8rem;
   }
 
   .pair-grid,

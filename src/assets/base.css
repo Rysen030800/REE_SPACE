@@ -52,6 +52,12 @@
     "SF Pro Display",
     "Segoe UI",
     sans-serif;
+  --font-section-subtitle: "adobe-garamond-pro", serif;
+  --font-section-subtitle-weight: 1100;
+  --font-section-subtitle-style: normal;
+  --section-subtitle-size: clamp(1.42rem, 1.7vw, 1.62rem);
+  --section-subtitle-color: #fa8511;
+  --section-title-text-size: clamp(1.9rem, 2.8vw, 2.55rem);
 }
 
 :root[data-theme='dark'] {
@@ -75,6 +81,7 @@
   --nav-link: rgba(245, 245, 245, 0.72);
   --nav-link-hover: rgba(245, 245, 245, 0.95);
   --nav-link-active: rgba(245, 245, 245, 0.95);
+  --section-subtitle-color: var(--section-card-border);
 }
 
 *,
@@ -147,6 +154,28 @@ body {
   margin: 0 0 0.7rem;
   line-height: 1;
   color: var(--section-card-border);
+}
+
+.bungee-regular {
+  font-family: "Bungee", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.noto-sans-sc-heavy {
+  font-family: "Noto Sans SC", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.section-title-text {
+  margin: 0 0 0.95rem;
+  text-align: center;
+  color: var(--section-subtitle-color);
+  font-size: var(--section-title-text-size);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
 }
 
 .title-image {

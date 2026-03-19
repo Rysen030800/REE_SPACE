@@ -6,13 +6,6 @@ import { useUiStore } from '../stores/ui'
 
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
-const titleBase = `${import.meta.env.BASE_URL}title/`
-const titleLightSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E7%94%9F%E6%B4%BB1.png` : `${titleBase}life%201.png`,
-)
-const titleDarkSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E7%94%9F%E6%B4%BB%202.png` : `${titleBase}life%202.png`,
-)
 
 function mosaicSize(index: number) {
   const pattern = ['lg', 'sm', 'sm', 'md', 'sm', 'lg', 'sm', 'md', 'sm', 'sm', 'lg', 'sm']
@@ -22,10 +15,7 @@ function mosaicSize(index: number) {
 
 <template>
   <section id="life" class="section">
-    <h2 class="section-title-image" :aria-label="text.sections.life.title">
-      <img class="title-image title-image-light" :src="titleLightSrc" :alt="text.sections.life.title" />
-      <img class="title-image title-image-dark" :src="titleDarkSrc" :alt="text.sections.life.title" />
-    </h2>
+    <h2 class="section-title-text" :class="ui.lang === 'zh' ? 'noto-sans-sc-heavy' : 'bungee-regular'">{{ text.sections.life.title }}</h2>
     <p class="lead">{{ text.sections.life.lead }}</p>
 
     <div class="fav-grid">

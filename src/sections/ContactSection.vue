@@ -5,21 +5,11 @@ import { useUiStore } from '../stores/ui'
 
 const ui = useUiStore()
 const text = computed(() => copy[ui.lang])
-const titleBase = `${import.meta.env.BASE_URL}title/`
-const titleLightSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E8%81%94%E7%B3%BB1.png` : `${titleBase}contact%201.png`,
-)
-const titleDarkSrc = computed(() =>
-  ui.lang === 'zh' ? `${titleBase}%E8%81%94%E7%B3%BB%202.png` : `${titleBase}contact%202.png`,
-)
 </script>
 
 <template>
   <section id="contact" class="section">
-    <h2 class="section-title-image" :aria-label="text.sections.contact.title">
-      <img class="title-image title-image-light" :src="titleLightSrc" :alt="text.sections.contact.title" />
-      <img class="title-image title-image-dark" :src="titleDarkSrc" :alt="text.sections.contact.title" />
-    </h2>
+    <h2 class="section-title-text" :class="ui.lang === 'zh' ? 'noto-sans-sc-heavy' : 'bungee-regular'">{{ text.sections.contact.title }}</h2>
     <p class="lead">{{ text.sections.contact.lead }}</p>
 
     <div class="cards">
