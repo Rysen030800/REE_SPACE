@@ -335,6 +335,14 @@ onBeforeUnmount(() => {
 
 @media (max-width: 900px) {
   .photo-album {
+    overflow-x: clip;
+  }
+
+  .photo-viewport {
+    overflow-x: hidden;
+  }
+
+  .photo-album {
     --photo-gap: 2rem;
   }
 

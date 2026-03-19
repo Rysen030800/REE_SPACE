@@ -1,9 +1,18 @@
 @import './base.css';
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 #app {
+  width: 100%;
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  overflow-x: clip;
 }
 
 @media (min-width: 1600px) {

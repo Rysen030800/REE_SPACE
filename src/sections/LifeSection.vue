@@ -86,6 +86,23 @@ function startMovieAutoplay() {
   movieAutoTimer = window.setInterval(nextMovie, 4200)
 }
 
+function handleCoverError(event: Event) {
+  const img = event.target as HTMLImageElement | null
+  if (!img) return
+  if (img.dataset.fallbackTried === '1') return
+
+  const current = img.getAttribute('src') ?? ''
+  const [pathOnly] = current.split('?')
+  const parts = pathOnly.split('/')
+  const encodedName = parts.pop()
+  if (!encodedName) return
+
+  const folder = parts.join('/')
+  const decodedName = decodeURIComponent(encodedName)
+  img.dataset.fallbackTried = '1'
+  img.src = `${folder}/${decodedName}`
+}
+
 function signedDistance(index: number, activeIndex: number, total: number) {
   if (total <= 1) return 0
   const raw = (index - activeIndex + total) % total
@@ -150,7 +167,7 @@ onBeforeUnmount(() => {
               :class="{ 'is-active': idx === activeAlbum }"
               :style="cardTransform(idx, activeAlbum, musicAlbums.length)"
             >
-              <img class="album-cover" :src="album.image" :alt="album.title" loading="lazy" />
+              <img class="album-cover" :src="album.image" :alt="album.title" loading="lazy" @error="handleCoverError" />
             </article>
           </div>
           <div class="album-panel">
@@ -174,7 +191,7 @@ onBeforeUnmount(() => {
               :class="{ 'is-active': idx === activeMovie }"
               :style="cardTransform(idx, activeMovie, movieAlbums.length)"
             >
-              <img class="album-cover movie-cover" :src="movie.image" :alt="movie.title" loading="lazy" />
+              <img class="album-cover movie-cover" :src="movie.image" :alt="movie.title" loading="lazy" @error="handleCoverError" />
             </article>
           </div>
           <div class="album-panel">

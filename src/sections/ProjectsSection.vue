@@ -558,6 +558,7 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   border: 1px solid var(--section-card-border);
   object-fit: cover;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .project-feature-image-modal {
@@ -895,6 +896,24 @@ onBeforeUnmount(() => {
   }
 
   :root[data-theme='dark'] .internship-grid .card:hover .internship-visual-img {
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.4);
+  }
+
+  .innovation-grid .card:hover .desc-block {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .project-feature-card:hover .project-feature-image {
+    transform: translateY(-2px) scale(1.015);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .innovation-grid .card:hover .desc-block {
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34);
+  }
+
+  :root[data-theme='dark'] .project-feature-card:hover .project-feature-image {
     box-shadow: 0 12px 22px rgba(0, 0, 0, 0.4);
   }
 }
