@@ -4,7 +4,12 @@ import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  async scrollBehavior(to, _from, savedPosition) {
+  async scrollBehavior(to, from, savedPosition) {
+    const isInitialLoad = from.matched.length === 0
+    if (isInitialLoad) {
+      return { top: 0, behavior: 'auto' }
+    }
+
     if (savedPosition) return savedPosition
 
     if (to.hash) {
