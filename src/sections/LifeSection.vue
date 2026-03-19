@@ -1,5 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import type { CSSProperties } from 'vue'
 import { favorites, musicAlbums } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -43,7 +44,7 @@ function signedDistance(index: number) {
   return raw > total / 2 ? raw - total : raw
 }
 
-function cardTransform(index: number) {
+function cardTransform(index: number): CSSProperties {
   const d = signedDistance(index)
   const abs = Math.abs(d)
 
@@ -52,7 +53,7 @@ function cardTransform(index: number) {
       opacity: 0,
       zIndex: 0,
       transform: 'translate3d(0, 28px, 0) scale(0.86) rotate(0deg)',
-      pointerEvents: 'none',
+      pointerEvents: 'none' as const,
     }
   }
 
@@ -63,11 +64,13 @@ function cardTransform(index: number) {
   const opacity = d === 0 ? 1 : 0.74
   const zIndex = d === 0 ? 40 : 24 - abs
 
+  const pointerEvents: CSSProperties['pointerEvents'] = d === 0 ? 'auto' : 'none'
+
   return {
     opacity,
     zIndex,
     transform: `translate3d(${x}px, ${y}px, 0) scale(${scale}) rotate(${rotate}deg)`,
-    pointerEvents: d === 0 ? 'auto' : 'none',
+    pointerEvents,
   }
 }
 
@@ -103,8 +106,8 @@ onBeforeUnmount(() => {
           <div class="album-panel">
             <p class="album-name">{{ currentAlbum?.title }}</p>
             <div class="album-controls">
-              <button type="button" class="album-btn" @click="prevAlbum" aria-label="Previous album">←</button>
-              <button type="button" class="album-btn" @click="nextAlbum" aria-label="Next album">→</button>
+              <button type="button" class="album-btn" @click="prevAlbum" aria-label="Previous album">&larr;</button>
+              <button type="button" class="album-btn" @click="nextAlbum" aria-label="Next album">&rarr;</button>
             </div>
           </div>
         </div>
@@ -364,3 +367,4 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+
