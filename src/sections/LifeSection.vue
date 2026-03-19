@@ -225,8 +225,10 @@ onBeforeUnmount(() => {
 
 .album-panel {
   display: grid;
-  gap: 0.55rem;
+  grid-template-rows: 2.9em auto;
+  gap: 0.45rem;
   justify-items: center;
+  align-content: center;
 }
 
 .album-name {
@@ -236,7 +238,12 @@ onBeforeUnmount(() => {
   font-weight: 600;
   font-size: 0.95rem;
   line-height: 1.25;
-  max-width: 11ch;
+  width: 14ch;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
 .album-controls {
@@ -326,13 +333,18 @@ onBeforeUnmount(() => {
 
   .album-panel {
     grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
     align-items: center;
     justify-items: start;
     width: 100%;
   }
 
   .album-name {
-    max-width: none;
+    width: auto;
+    overflow: visible;
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
     text-align: left;
   }
 }

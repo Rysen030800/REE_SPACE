@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { copy } from './i18n'
@@ -36,7 +36,7 @@ function closeMobileMenu() {
   <div class="app-shell">
     <header class="site-header">
       <div class="header-top">
-        <RouterLink class="brand" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">我有间厝 · REE_SPACE</RouterLink>
+        <RouterLink class="brand" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">我有闽厝 · REE_SPACE</RouterLink>
 
         <button
           class="nav-toggle"
@@ -163,9 +163,9 @@ function closeMobileMenu() {
 
     <main class="site-main">
       <RouterView />
-    </main>
-
-    <footer class="site-footer">
+    </main>    <footer class="site-footer">
+      <p>厝主理人：Ree CHEN</p>
+      <p>技术支持：Qiaohe LIU</p>
       <span>© {{ year }} REE_SPACE</span>
     </footer>
   </div>
@@ -345,6 +345,13 @@ function closeMobileMenu() {
   border-top: 1px solid var(--color-border);
   color: var(--color-text);
   font-size: 0.9rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.site-footer p,
+.site-footer span {
+  margin: 0;
 }
 
 .tool-btn {
@@ -557,3 +564,4 @@ function closeMobileMenu() {
   }
 }
 </style>
+

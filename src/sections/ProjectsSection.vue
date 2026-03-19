@@ -72,22 +72,22 @@ const aiFeatureImage = `${import.meta.env.BASE_URL}experience/ai/dfa05355-8d97-4
 const aiFeatureDetail = computed(() =>
   ui.lang === 'zh'
     ? `【Situation | 项目背景】
-作为一名跨学科背景（景观设计转产品经理）的学习者，需要一个能够整合多维能力（逻辑思维、审美下限、技术理解力）的数字化窗口。在零前端工程背景下，挑战通过 AI 协作编程（Vibe Coding）在 7 天内完成个人官网的闭环开发与部署。
+作为跨学科背景（景观设计转产品经理）学习者，需要一个能够整合多维能力（逻辑思维、审美下限、技术理解力）的数字化窗口。在零前端工程背景下，挑战通过 AI 协作编程（Vibe Coding）在 7 天内完成个人官网的闭环开发与部署。
 
 【Task | 核心任务】
 需求定义： 快速搭建个人网页，丰富视觉意象，完善信息架构。
 开发交付： 利用 Vibe Coding 模式，通过高质量 Prompt 驱动 AI 交付全响应式站点。
-逻辑迁移： 将建筑学的空间规划逻辑转化为网页的布局逻辑，确保跨设备的交互一致性。
+逻辑迁移： 将建筑类空间规划逻辑转化为网页的布局逻辑，确保跨设备的交互一致性。
 
 【Action | 关键行动】
-建筑设计能力的逻辑迁移： 将网页排版视为“数字化场地规划”。类比建筑图纸中的“总平-分层-详图”逻辑，对网页进行模块化需求拆解。通过定义清晰的视觉层级（Visual Hierarchy），确保复杂信息在不同屏幕尺度下的可读性与秩序感。
-Prompt 驱动的功能实现： 采用结构化提示词引导 AI 完成底层代码编写。针对由于 CSS 优先级导致的字体渲染与字号偏差问题，通过浏览器开发者工具（F12）进行精准定位，并引导 AI 采用变量覆盖与优先级修正策略进行修复。
-用户路径与体验优化： 运用设计师对“流线”的敏感度，设计简洁直观的页面跳转逻辑。在缺乏代码基础的情况下，通过反复调试 Prompt，实现了平滑滚动（Smooth Scroll）与局部元素浮现效果，提升访客的“游览”体验。
+建筑设计能力迁移： 类比建筑图纸中的“总平-分层-详图”逻辑，对网页进行模块化需求拆解。通过定义清晰的视觉层级（Visual Hierarchy），确保复杂信息在不同屏幕尺度下的可读性与秩序感。
+Prompt 驱动功能实现： 采用结构化提示词引导 AI 完成底层代码编写。针对由于 CSS 优先级导致的字体渲染与字号偏差问题，通过浏览器开发者工具（F12）进行精准定位，并链接公开字体库模板进行修正。
+用户路径与体验优化： 运用设计师对“流线”的敏感度，设计简洁直观的页面跳转逻辑。在缺乏代码基础的情况下，通过反复调试 Prompt，实现了滚动切换（Smooth Scroll）与局部元素浮现效果，提升动效丰富性。
 全链路部署与迭代： 独立完成从 GitHub 仓库管理到 Vercel 持续集成/持续部署 (CI/CD) 的全过程，实现站点的全球访问与快速版本更新。
 
 【Result | 项目成果】
 高效交付： 跨越技术鸿沟，在 7 天内实现了从 0 到 1 的高质量产品交付，开发周期较传统学习模式显著缩短。
-能力验证： 成功验证了将建筑工程逻辑迁移至软件产品定义的可行性，展示了极强的逻辑建模能力和 AI 工具应用水平。
+能力验证： 成功验证了将建筑工程逻辑迁移至软件产品定义的可行性，展示了逻辑建模能力和 AI 工具应用水平。
 品牌沉淀： 构建了一个具备深度个人印记的数字化场域，单周内通过 AI 协作完成 20+ 次功能迭代与审美优化。`
     : `【Situation | Project Context】
 As an interdisciplinary learner (transitioning from landscape design to product management), I needed a digital window that could integrate multiple competencies: logical thinking, visual judgment, and technical understanding. With no frontend engineering background, I set a 7-day challenge to complete end-to-end development and deployment of a personal website through AI-assisted coding (Vibe Coding).
