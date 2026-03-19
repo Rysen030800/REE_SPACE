@@ -67,6 +67,7 @@ const aiFeatureSummary = computed(() =>
         stack: 'Stack: Next.js / Tailwind CSS / Vibe Coding (Cursor) / Vercel',
       },
 )
+const aiFeatureClickHint = computed(() => (ui.lang === 'zh' ? '点击' : 'Click'))
 const aiFeatureImage = `${import.meta.env.BASE_URL}experience/ai/dfa05355-8d97-4de0-80f1-4e777de6a33b.png`
 
 const aiFeatureDetail = computed(() =>
@@ -124,14 +125,35 @@ const innovation = computed(() => {
 const educationItems = computed(() => {
   if (ui.lang === 'zh') {
     return [
-      { school: '香港城市大学', period: '09.2025 - 10.2026', degree: '硕士｜房屋与都市管理' },
-      { school: '福建理工大学', period: '09.2019 - 07.2024', degree: '工学学士｜风景园林' },
+      {
+        school: '香港城市大学',
+        period: '09.2025 - 10.2026',
+        degree: '硕士｜房屋与都市管理',
+        courses: '核心课程: Urban Data Analysis, Urban Economics, Housing Policy',
+      },
+      {
+        school: '福建理工大学',
+        period: '09.2019 - 07.2024',
+        degree: '工学学士｜风景园林',
+        courses: '核心课程: 工程管理，环境行为学，高等数学，生态学基础，古建筑测绘，风景园林遗产认知实习，风景园林规划与设计，建筑绘画',
+      },
     ]
   }
 
   return [
-    { school: 'City University of Hong Kong', period: '09.2025 - 10.2026', degree: 'Master | Housing and Urban Management' },
-    { school: 'Fujian University of Technology', period: '09.2019 - 07.2024', degree: 'Bachelor of Engineering | Landscape Architecture' },
+    {
+      school: 'City University of Hong Kong',
+      period: '09.2025 - 10.2026',
+      degree: 'Master | Housing and Urban Management',
+      courses: 'Core courses: Urban Data Analysis, Urban Economics, Housing Policy',
+    },
+    {
+      school: 'Fujian University of Technology',
+      period: '09.2019 - 07.2024',
+      degree: 'Bachelor of Engineering | Landscape Architecture',
+      courses:
+        'Core courses: Engineering Management, Environmental Behavior, Advanced Mathematics, Fundamentals of Ecology, Historic Architecture Surveying, Landscape Heritage Cognition Practicum, Landscape Planning and Design, Architectural Drawing',
+    },
   ]
 })
 
@@ -310,6 +332,7 @@ onBeforeUnmount(() => {
             <h3 class="title">{{ aiFeatureSummary.title }}</h3>
             <p class="desc project-feature-line">{{ aiFeatureSummary.role }}</p>
             <p class="desc project-feature-line">{{ aiFeatureSummary.stack }}</p>
+            <span class="project-feature-cta">{{ aiFeatureClickHint }}</span>
           </div>
           <img class="project-feature-image" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
         </div>
@@ -359,6 +382,7 @@ onBeforeUnmount(() => {
           <span class="meta">{{ item.period }}</span>
         </div>
         <p class="muted">{{ item.degree }}</p>
+        <p class="muted courses">{{ item.courses }}</p>
       </article>
     </div>
 
@@ -502,7 +526,7 @@ onBeforeUnmount(() => {
 
 .project-feature-main {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
   gap: 1.2rem;
 }
@@ -510,6 +534,20 @@ onBeforeUnmount(() => {
 .project-feature-copy {
   min-width: 0;
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-feature-cta {
+  margin-top: auto;
+  align-self: flex-start;
+  border: 1px solid var(--section-card-border);
+  color: var(--section-card-border);
+  border-radius: 999px;
+  padding: 0.15rem 0.62rem;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
 }
 
 .project-feature-image {
@@ -579,6 +617,7 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   border: 1px solid var(--section-card-border);
   background: var(--color-background);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .title {
@@ -609,6 +648,7 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   border: 1px solid var(--section-card-border);
   background: var(--color-background);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .card-footer {
@@ -794,6 +834,10 @@ onBeforeUnmount(() => {
   opacity: 0.8;
 }
 
+.courses {
+  line-height: 1.45;
+}
+
 .row {
   display: flex;
   align-items: baseline;
@@ -834,6 +878,24 @@ onBeforeUnmount(() => {
   :root[data-theme='dark'] .info-card:hover,
   :root[data-theme='dark'] .coursework-card:hover {
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .internship-grid .card:hover .desc-block {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .internship-grid .card:hover .internship-visual-img {
+    transform: translateY(-2px) scale(1.015);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  :root[data-theme='dark'] .internship-grid .card:hover .desc-block {
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34);
+  }
+
+  :root[data-theme='dark'] .internship-grid .card:hover .internship-visual-img {
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.4);
   }
 }
 

@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { CSSProperties } from 'vue'
-import { favorites, movieAlbums, musicAlbums } from '../data/creative'
+import { movieAlbums, musicAlbums } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
 
@@ -16,6 +16,29 @@ let movieAutoTimer: number | null = null
 
 const currentAlbum = computed(() => musicAlbums[activeAlbum.value] ?? musicAlbums[0])
 const currentMovie = computed(() => movieAlbums[activeMovie.value] ?? movieAlbums[0])
+
+function removeExtension(name: string): string {
+  return name.replace(/\.[^/.]+$/u, '').trim()
+}
+
+function splitMovieTitle(name: string): { zh: string; en: string } {
+  const base = removeExtension(name)
+  const enStart = base.search(/[A-Za-z]/u)
+  if (enStart <= 0) return { zh: base, en: base }
+
+  const zh = base.slice(0, enStart).trim()
+  const en = base.slice(enStart).trim()
+  return {
+    zh: zh || base,
+    en: en || base,
+  }
+}
+
+const currentAlbumLabel = computed(() => removeExtension(currentAlbum.value?.title ?? ''))
+const currentMovieLabel = computed(() => {
+  const parsed = splitMovieTitle(currentMovie.value?.title ?? '')
+  return ui.lang === 'zh' ? parsed.zh : parsed.en
+})
 
 function nextAlbum() {
   if (musicAlbums.length === 0) return
@@ -131,7 +154,7 @@ onBeforeUnmount(() => {
             </article>
           </div>
           <div class="album-panel">
-            <p class="album-name">{{ currentAlbum?.title }}</p>
+            <p class="album-name">{{ currentAlbumLabel }}</p>
             <div class="album-controls">
               <button type="button" class="album-btn" @click="prevAlbum" aria-label="Previous album">&larr;</button>
               <button type="button" class="album-btn" @click="nextAlbum" aria-label="Next album">&rarr;</button>
@@ -142,20 +165,20 @@ onBeforeUnmount(() => {
 
       <div class="fav-card movies-card">
         <h4>{{ text.sections.life.movies }}</h4>
-        <div class="album-showcase" @mouseenter="pauseMovieAutoplay" @mouseleave="startMovieAutoplay">
-          <div class="album-stage">
+        <div class="album-showcase movie-showcase" @mouseenter="pauseMovieAutoplay" @mouseleave="startMovieAutoplay">
+          <div class="album-stage movie-stage">
             <article
               v-for="(movie, idx) in movieAlbums"
               :key="`${movie.title}-${idx}`"
-              class="album-frame"
+              class="album-frame movie-frame"
               :class="{ 'is-active': idx === activeMovie }"
               :style="cardTransform(idx, activeMovie, movieAlbums.length)"
             >
-              <img class="album-cover" :src="movie.image" :alt="movie.title" loading="lazy" />
+              <img class="album-cover movie-cover" :src="movie.image" :alt="movie.title" loading="lazy" />
             </article>
           </div>
           <div class="album-panel">
-            <p class="album-name">{{ currentMovie?.title }}</p>
+            <p class="album-name">{{ currentMovieLabel }}</p>
             <div class="album-controls">
               <button type="button" class="album-btn" @click="prevMovie" aria-label="Previous movie">&larr;</button>
               <button type="button" class="album-btn" @click="nextMovie" aria-label="Next movie">&rarr;</button>
@@ -164,12 +187,6 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div class="fav-card tv-card">
-        <h4>{{ text.sections.life.tv }}</h4>
-        <ul class="list">
-          <li v-for="x in favorites.tv" :key="x">{{ x }}</li>
-        </ul>
-      </div>
     </div>
   </section>
 </template>
@@ -304,6 +321,20 @@ onBeforeUnmount(() => {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
 }
 
+.movie-stage {
+  height: clamp(250px, 34vw, 330px);
+}
+
+.movie-frame {
+  width: clamp(170px, 20vw, 240px);
+  margin-left: calc(clamp(170px, 20vw, 240px) * -0.5);
+}
+
+.movie-cover {
+  object-fit: contain;
+  background: transparent;
+}
+
 .album-btn {
   width: 2rem;
   height: 2rem;
@@ -360,8 +391,7 @@ onBeforeUnmount(() => {
   }
 
   .music-card,
-  .movies-card,
-  .tv-card {
+  .movies-card {
     grid-column: 1;
   }
 
@@ -373,6 +403,10 @@ onBeforeUnmount(() => {
   .album-stage {
     width: 100%;
     height: clamp(220px, 62vw, 280px);
+  }
+
+  .movie-stage {
+    height: clamp(240px, 66vw, 320px);
   }
 
   .album-panel {
@@ -390,12 +424,18 @@ onBeforeUnmount(() => {
     -webkit-line-clamp: unset;
     -webkit-box-orient: unset;
     text-align: left;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 }
 
 @media (max-width: 640px) {
   .album-stage {
     height: 230px;
+  }
+
+  .movie-stage {
+    height: 250px;
   }
 }
 

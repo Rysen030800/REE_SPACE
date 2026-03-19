@@ -425,7 +425,7 @@ onBeforeUnmount(() => {
     top: 0;
     right: auto;
     transform: translateX(-50%);
-    width: min(760px, 140vw);
+    width: min(760px, 100%);
     margin: 0;
     aspect-ratio: 4 / 3;
     opacity: 0.88;
@@ -465,7 +465,7 @@ onBeforeUnmount(() => {
   }
 
   .hero-art {
-    width: min(640px, 155vw);
+    width: min(640px, 100%);
     aspect-ratio: 4 / 3;
     opacity: 0.84;
   }
@@ -501,7 +501,7 @@ onBeforeUnmount(() => {
   }
 
   .hero-art {
-    width: min(590px, 170vw);
+    width: min(590px, 100%);
     opacity: 0.82;
   }
 }
