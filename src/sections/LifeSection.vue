@@ -92,7 +92,9 @@ function handleCoverError(event: Event) {
   if (img.dataset.fallbackTried === '1') return
 
   const current = img.getAttribute('src') ?? ''
-  const [pathOnly] = current.split('?')
+  const [pathOnlyRaw] = current.split('?')
+  const pathOnly = pathOnlyRaw ?? current
+  if (!pathOnly) return
   const parts = pathOnly.split('/')
   const encodedName = parts.pop()
   if (!encodedName) return
