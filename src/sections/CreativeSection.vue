@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+﻿<script setup lang="ts">
+import { computed } from 'vue'
 import { illustrations, photography } from '../data/creative'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -11,108 +11,8 @@ function pick(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
 }
 
-const carouselPhotos = computed(() => [...photography, ...photography])
-const albumRef = ref<HTMLElement | null>(null)
-const trackRef = ref<HTMLElement | null>(null)
-let focusRaf: number | null = null
-let marqueeRaf: number | null = null
-let marqueeLastTs = 0
-let marqueeOffset = 0
-let marqueeSpeed = 78
-let marqueeTargetSpeed = 78
-let reduceMotion = false
-
-function setMarqueeHover(hovered: boolean) {
-  marqueeTargetSpeed = hovered ? 0 : 78
-}
-
-function startMarqueeLoop() {
-  const tick = (ts: number) => {
-    const track = trackRef.value
-    if (!track || reduceMotion) {
-      marqueeRaf = window.requestAnimationFrame(tick)
-      return
-    }
-
-    if (!marqueeLastTs) marqueeLastTs = ts
-    const dt = Math.max(0.001, (ts - marqueeLastTs) / 1000)
-    marqueeLastTs = ts
-
-    marqueeSpeed += (marqueeTargetSpeed - marqueeSpeed) * 0.065
-    marqueeOffset -= marqueeSpeed * dt
-
-    const loopWidth = track.scrollWidth / 2
-    if (loopWidth > 0) {
-      while (marqueeOffset <= -loopWidth) marqueeOffset += loopWidth
-      while (marqueeOffset > 0) marqueeOffset -= loopWidth
-      track.style.transform = `translateX(${marqueeOffset}px)`
-    }
-
-    marqueeRaf = window.requestAnimationFrame(tick)
-  }
-
-  if (marqueeRaf !== null) window.cancelAnimationFrame(marqueeRaf)
-  marqueeRaf = window.requestAnimationFrame(tick)
-}
-
-function stopMarqueeLoop() {
-  if (marqueeRaf !== null) {
-    window.cancelAnimationFrame(marqueeRaf)
-    marqueeRaf = null
-  }
-}
-
-function updatePhotoFocus() {
-  const album = albumRef.value
-  if (!album) return
-
-  const albumRect = album.getBoundingClientRect()
-  const albumCenter = albumRect.left + albumRect.width / 2
-  const effectRadius = albumRect.width * 0.26
-  const cards = album.querySelectorAll<HTMLElement>('.photo-card')
-
-  cards.forEach((card) => {
-    const rect = card.getBoundingClientRect()
-    const cardCenter = rect.left + rect.width / 2
-    const distance = Math.abs(cardCenter - albumCenter)
-    const focus = Math.max(0, 1 - distance / effectRadius)
-    card.style.setProperty('--focus', focus.toFixed(3))
-    card.style.setProperty('--focus-z', String(Math.round(focus * 100) + 1))
-  })
-}
-
-function startFocusLoop() {
-  const tick = () => {
-    updatePhotoFocus()
-    focusRaf = window.requestAnimationFrame(tick)
-  }
-
-  if (focusRaf !== null) {
-    window.cancelAnimationFrame(focusRaf)
-  }
-  focusRaf = window.requestAnimationFrame(tick)
-}
-
-function stopFocusLoop() {
-  if (focusRaf !== null) {
-    window.cancelAnimationFrame(focusRaf)
-    focusRaf = null
-  }
-}
-
-onMounted(async () => {
-  await nextTick()
-  reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
-  marqueeSpeed = reduceMotion ? 0 : 78
-  marqueeTargetSpeed = marqueeSpeed
-  startMarqueeLoop()
-  startFocusLoop()
-})
-
-onBeforeUnmount(() => {
-  stopMarqueeLoop()
-  stopFocusLoop()
-})
+const marqueePhotos = computed(() => [...photography, ...photography])
+const marqueeIllustrations = computed(() => [...illustrations, ...illustrations])
 </script>
 
 <template>
@@ -128,19 +28,20 @@ onBeforeUnmount(() => {
       </svg>
       <span>{{ text.sections.creative.photography }}</span>
     </h3>
-    <div ref="albumRef" class="photo-album" @mouseenter="setMarqueeHover(true)" @mouseleave="setMarqueeHover(false)">
-      <div class="photo-viewport">
-        <div ref="trackRef" class="photo-track">
-          <article
-            v-for="(p, idx) in carouselPhotos"
-            :key="`${pick(p.title)}-${idx}`"
-            class="photo-card"
-          >
-            <div class="photo-media">
-              <img v-if="p.image" class="photo-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
-            </div>
-          </article>
-        </div>
+    <div class="marquee marquee-left">
+      <div class="marquee-track">
+        <article v-for="(p, idx) in marqueePhotos" :key="`photo-a-${pick(p.title)}-${idx}`" class="photo-card">
+          <div class="photo-media">
+            <img v-if="p.image" class="photo-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+          </div>
+        </article>
+      </div>
+      <div class="marquee-track" aria-hidden="true">
+        <article v-for="(p, idx) in marqueePhotos" :key="`photo-b-${pick(p.title)}-${idx}`" class="photo-card">
+          <div class="photo-media">
+            <img v-if="p.image" class="photo-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+          </div>
+        </article>
       </div>
     </div>
 
@@ -151,11 +52,19 @@ onBeforeUnmount(() => {
       </svg>
       <span>{{ text.sections.creative.illustration }}</span>
     </h3>
-    <div class="illustration-grid">
-      <article v-for="p in illustrations" :key="pick(p.title)" class="illustration-item">
-        <img v-if="p.image" class="illustration-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
-        <div v-else class="illustration-img placeholder" aria-hidden="true" />
-      </article>
+    <div class="marquee marquee-right">
+      <div class="marquee-track illustration-track">
+        <article v-for="(p, idx) in marqueeIllustrations" :key="`illustration-a-${pick(p.title)}-${idx}`" class="illustration-item">
+          <img v-if="p.image" class="illustration-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+          <div v-else class="illustration-img placeholder" aria-hidden="true" />
+        </article>
+      </div>
+      <div class="marquee-track illustration-track" aria-hidden="true">
+        <article v-for="(p, idx) in marqueeIllustrations" :key="`illustration-b-${pick(p.title)}-${idx}`" class="illustration-item">
+          <img v-if="p.image" class="illustration-img" :src="p.image" :alt="pick(p.title)" loading="lazy" />
+          <div v-else class="illustration-img placeholder" aria-hidden="true" />
+        </article>
+      </div>
     </div>
   </section>
 </template>
@@ -194,34 +103,37 @@ onBeforeUnmount(() => {
   flex: 0 0 auto;
 }
 
-.photo-track {
-  position: relative;
+.marquee {
+  --marquee-gap: 1rem;
+  --marquee-duration: 44s;
   display: flex;
-  gap: var(--photo-gap, 1.1rem);
+  gap: var(--marquee-gap);
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  gap: var(--marquee-gap);
   width: max-content;
+  flex-shrink: 0;
+  animation: marquee-left var(--marquee-duration) linear infinite;
 }
 
-.photo-album {
-  --photo-gap: 2.6rem;
+.marquee-left {
+  --marquee-gap: 1.2rem;
+  --marquee-duration: 48s;
   margin: 0.25rem 0 1.2rem;
-  padding: 0;
-  overflow: visible;
 }
 
-.photo-viewport {
-  overflow: visible;
+.marquee-right {
+  --marquee-gap: 0.75rem;
+  --marquee-duration: 42s;
 }
 
 .photo-card {
-  position: relative;
-  width: clamp(190px, 19vw, 260px);
+  width: clamp(180px, 18vw, 250px);
   flex: 0 0 auto;
-  --focus: 0;
-  --focus-z: 1;
-  transform: scale(calc(1 + var(--focus) * 0.24));
-  transition: transform 70ms ease-out;
-  transform-origin: center center;
-  z-index: var(--focus-z);
 }
 
 .photo-img {
@@ -237,18 +149,14 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-.illustration-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
 .illustration-item {
   margin: 0;
-  border: 1px solid var(--section-card-border);
-  border-radius: 14px;
-  padding: 0.6rem;
-  background: var(--color-background-soft);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  width: clamp(180px, 18vw, 250px);
+  flex: 0 0 auto;
 }
 
 .illustration-img {
@@ -256,117 +164,44 @@ onBeforeUnmount(() => {
   aspect-ratio: 4 / 5;
   height: auto;
   display: block;
-  border-radius: 12px;
+  border-radius: 0;
   object-fit: cover;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.card {
-  border: 1px solid var(--section-card-border);
-  border-radius: 14px;
-  padding: 1rem;
-  background: var(--color-background-soft);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
-}
-
-.img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-  margin-bottom: 0.75rem;
-  background: var(--color-background-mute);
+.illustration-track {
+  animation-name: marquee-right;
 }
 
 .placeholder {
   display: block;
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.25rem;
-}
-
-.name {
-  font-weight: 600;
-  color: var(--color-heading);
-}
-
-.meta {
-  opacity: 1;
-  font-size: 0.9rem;
-}
-
-.desc {
-  margin: 0;
-  opacity: 1;
-}
-
-:root[data-theme='dark'] .card {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
-}
-
-@media (hover: hover) {
-  .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
-  }
-
-  :root[data-theme='dark'] .card:hover {
-    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
-  }
-}
-
 @media (max-width: 1100px) {
-  .photo-card {
+  .photo-card,
+  .illustration-item {
     width: clamp(170px, 27vw, 230px);
   }
 }
 
 @media (max-width: 900px) {
-  .photo-album {
-    overflow-x: clip;
-  }
-
-  .photo-viewport {
-    overflow-x: hidden;
-  }
-
-  .photo-album {
-    --photo-gap: 2rem;
-  }
-
-  .photo-card {
+  .photo-card,
+  .illustration-item {
     width: clamp(150px, 35vw, 200px);
-  }
-
-  .illustration-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
-  .photo-album {
-    --photo-gap: 1.45rem;
+  .photo-card,
+  .illustration-item {
+    width: clamp(140px, 42vw, 180px);
   }
 
-  .photo-card {
-    width: clamp(135px, 56vw, 180px);
+  .marquee-left {
+    --marquee-gap: 0.95rem;
   }
 
-  .illustration-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
+  .marquee-right {
+    --marquee-gap: 0.62rem;
   }
 }
 
@@ -374,27 +209,35 @@ onBeforeUnmount(() => {
   .section {
     padding: 1.8rem 0;
   }
+}
 
-  .illustration-grid {
-    gap: 0.8rem;
-  }
-
-  .grid {
-    gap: 1.15rem;
-  }
-
-  .card {
-    padding: 1.1rem;
-  }
-
-  .img {
-    margin-bottom: 0.85rem;
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card {
-    transition: none;
+  .marquee-track {
+    animation: none;
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--marquee-gap)));
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(calc(-100% - var(--marquee-gap)));
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>

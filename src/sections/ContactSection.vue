@@ -60,7 +60,7 @@ const text = computed(() => copy[ui.lang])
 <style scoped>
 .section {
   scroll-margin-top: 90px;
-  padding: 1.5rem 0 2.25rem;
+  padding: 3.5rem 0 3rem;
   max-width: 1040px;
   margin: 0 auto;
 }
@@ -226,7 +226,7 @@ const text = computed(() => copy[ui.lang])
 
 @media (min-width: 1200px) {
   .section {
-    padding: 1.8rem 0 2.5rem;
+    padding: 4rem 0 3.4rem;
     max-width: 1120px;
   }
 

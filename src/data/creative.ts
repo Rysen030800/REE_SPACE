@@ -170,9 +170,16 @@ const musicAlbumFiles = [
   '行走的鱼.jpg',
 ] as const
 
+const musicImagePath = (filename: string) => {
+  // Explicitly pin these two covers to avoid path-resolution issues on some deployments.
+  if (filename === 'GALA.jpg') return '/life/music/GALA.jpg'
+  if (filename === 'POP GIRL.jpg') return '/life/music/POP GIRL.jpg'
+  return `/life/music/${encodeURIComponent(filename)}`
+}
+
 export const musicAlbums: MusicAlbum[] = musicAlbumFiles.map((filename) => ({
   title: filename,
-  image: `/life/music/${encodeURIComponent(filename)}`,
+  image: musicImagePath(filename),
 }))
 
 const movieAlbumFiles = [

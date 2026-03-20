@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .section {
   scroll-margin-top: 90px;
-  padding: 1.5rem 0;
+  padding: 3.3rem 0 2.4rem;
 }
 
 .lead {
@@ -246,6 +246,15 @@ onBeforeUnmount(() => {
   background: var(--color-background-soft);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
   transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.music-card,
+.movies-card {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .fav-card h4 {
@@ -370,6 +379,11 @@ onBeforeUnmount(() => {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
 }
 
+:root[data-theme='dark'] .music-card,
+:root[data-theme='dark'] .movies-card {
+  box-shadow: none;
+}
+
 :root[data-theme='dark'] .album-cover {
   box-shadow: 0 16px 26px rgba(0, 0, 0, 0.4);
 }
@@ -383,11 +397,19 @@ onBeforeUnmount(() => {
   :root[data-theme='dark'] .fav-card:hover {
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
   }
+
+  .music-card:hover,
+  .movies-card:hover,
+  :root[data-theme='dark'] .music-card:hover,
+  :root[data-theme='dark'] .movies-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 @media (min-width: 1200px) {
   .section {
-    padding: 1.8rem 0;
+    padding: 3.8rem 0 2.8rem;
   }
 
   .fav-grid {
@@ -405,6 +427,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 900px) {
+  .section {
+    padding: 2.9rem 0 2rem;
+  }
+
   .fav-grid {
     grid-template-columns: 1fr;
   }

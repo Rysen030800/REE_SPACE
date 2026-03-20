@@ -135,7 +135,7 @@ onBeforeUnmount(() => {
   min-height: calc(100dvh - 88px);
   display: flex;
   align-items: center;
-  padding: 5rem 0 4rem;
+  padding: 5.2rem 0 5rem;
   scroll-margin-top: 90px;
   position: relative;
   overflow: visible;
@@ -351,7 +351,7 @@ onBeforeUnmount(() => {
 
 @media (min-width: 1200px) {
   .hero {
-    padding: 5.4rem 0 4.4rem;
+    padding: 5.6rem 0 5.6rem;
   }
 
   .hero-left,
@@ -380,7 +380,7 @@ onBeforeUnmount(() => {
 @media (max-width: 960px) {
   .hero {
     min-height: auto;
-    padding: 0 0 1.7rem;
+    padding: 0 0 2.1rem;
   }
 
   .hero-layout {
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .hero {
-    padding: 0 0 1.3rem;
+    padding: 0 0 1.7rem;
   }
 
   .kicker {
@@ -473,7 +473,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 420px) {
   .hero {
-    padding: 0 0 1.05rem;
+    padding: 0 0 1.45rem;
   }
 
   .title {

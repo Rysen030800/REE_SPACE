@@ -445,7 +445,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .section {
   scroll-margin-top: 90px;
-  padding: 2.2rem 0 1.5rem;
+  padding: 3.8rem 0 2.3rem;
 }
 
 .head {
@@ -558,7 +558,6 @@ onBeforeUnmount(() => {
   border-radius: 10px;
   border: 1px solid var(--section-card-border);
   object-fit: cover;
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
 
 .project-feature-image-modal {
@@ -627,13 +626,6 @@ onBeforeUnmount(() => {
   line-height: 1.34;
   color: var(--color-heading);
   font-family: var(--font-subtitle);
-}
-
-.internship-grid .title,
-.innovation-grid .title,
-.project-feature-card .title,
-.coursework-card h4 {
-  font-weight: 800;
 }
 
 .desc {
@@ -905,24 +897,6 @@ onBeforeUnmount(() => {
   :root[data-theme='dark'] .internship-grid .card:hover .internship-visual-img {
     box-shadow: 0 12px 22px rgba(0, 0, 0, 0.4);
   }
-
-  .innovation-grid .card:hover .desc-block {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  .project-feature-card:hover .project-feature-image {
-    transform: translateY(-2px) scale(1.015);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
-  }
-
-  :root[data-theme='dark'] .innovation-grid .card:hover .desc-block {
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.34);
-  }
-
-  :root[data-theme='dark'] .project-feature-card:hover .project-feature-image {
-    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.4);
-  }
 }
 
 @media (max-width: 900px) {
@@ -960,7 +934,7 @@ onBeforeUnmount(() => {
 
 @media (min-width: 1200px) {
   .section {
-    padding: 2.6rem 0 1.8rem;
+    padding: 4.3rem 0 2.7rem;
   }
 
   .pair-grid,
