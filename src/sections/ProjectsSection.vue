@@ -1,5 +1,6 @@
 ﻿<script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import type { CSSProperties } from 'vue'
 import { projects } from '../data/projects'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -44,6 +45,13 @@ function splitNumberedSections(content: string) {
 
   if (current.trim()) sections.push(current.trim())
   return sections.length > 0 ? sections : [content]
+}
+
+function splitSkillTags(content: string) {
+  return content
+    .split(/[，,]/u)
+    .map((part) => part.trim())
+    .filter(Boolean)
 }
 
 const internshipGroupTitle = computed(() => (ui.lang === 'zh' ? '实习' : 'Internships'))
@@ -160,9 +168,9 @@ const educationItems = computed(() => {
 const skillGroups = computed(() => {
   if (ui.lang === 'zh') {
     return [
-      { title: '数据与研究', items: ['SQL, SPSS, Tableau', '用户研究、问卷与用户画像'] },
+      { title: '数据与研究', items: ['SQL, SPSS, Tableau'] },
       { title: '设计与可视化', items: ['Adobe PS/AI/Id, SketchUp, Figma', 'GIS / BIM（项目实践）'] },
-      { title: 'AI 工具', items: ['ChatGPT, Gemini, AI 内容生成'] },
+      { title: 'AI 工具', items: ['ChatGPT, Gemini, AI 内容生成, Vibe Coding'] },
       { title: '语言', items: ['普通话（母语），闽南语（流利）', '英语（IELTS 7.0），粤语（学习中）', '日语 / 西班牙语（入门）'] },
     ]
   }
@@ -170,7 +178,7 @@ const skillGroups = computed(() => {
   return [
     { title: 'Data & Research', items: ['SQL, SPSS, Tableau', 'User research, survey & persona'] },
     { title: 'Design & Visualization', items: ['Adobe PS/AI/Id, SketchUp, Figma', 'GIS / BIM (project practice)'] },
-    { title: 'AI Tools', items: ['ChatGPT, Gemini, AI content generation'] },
+    { title: 'AI Tools', items: ['ChatGPT, Gemini, AI content generation, Vibe Coding'] },
     { title: 'Languages', items: ['Mandarin (native), Min Nan (fluent)', 'English (IELTS 7.0), Cantonese (learning)', 'Japanese / Spanish (beginner)'] },
   ]
 })
@@ -221,8 +229,24 @@ const courseworkItems: CourseworkItem[] = [
   },
 ]
 
+const courseworkSheetFiles = [
+  '古村落遗址调研 Survey of Ancient Village Sites.png',
+  '暗夜观星园区规划 Dark Sky Observatory Park Master Plan.jpg',
+  '生态滨水空间设计 Design of Ecological Waterfront Spaces 1.png',
+  '生态滨水空间设计 Design of Ecological Waterfront Spaces 2.png',
+  '风景区重规划 Revised Master Plan for the Scenic Area.png',
+] as const
+
+const courseworkSheets = courseworkSheetFiles.map((filename, index) => ({
+  id: `assignment-${index + 1}`,
+  image: `${import.meta.env.BASE_URL}experience/assignments/${encodeURIComponent(filename)}`,
+  alt: filename.replace(/\.[^.]+$/u, ''),
+}))
+
 const activeCourseworkId = ref<string | null>(null)
 const aiFeatureOpen = ref(false)
+const courseworkGridRef = ref<HTMLElement | null>(null)
+const courseworkPointerRatio = ref<number | null>(null)
 
 const activeCoursework = computed(() =>
   courseworkItems.find((item) => item.id === activeCourseworkId.value) ?? null,
@@ -245,6 +269,54 @@ function openAiFeature() {
 
 function closeAiFeature() {
   aiFeatureOpen.value = false
+}
+
+function handleCourseworkPointerMove(event: PointerEvent) {
+  const grid = courseworkGridRef.value
+  if (!grid) return
+
+  const rect = grid.getBoundingClientRect()
+  if (rect.width <= 0) return
+  const raw = (event.clientX - rect.left) / rect.width
+  courseworkPointerRatio.value = Math.min(1, Math.max(0, raw))
+}
+
+function resetCourseworkPointer() {
+  courseworkPointerRatio.value = null
+}
+
+function courseworkCardStyle(index: number): CSSProperties {
+  const ratio = courseworkPointerRatio.value
+  const total = courseworkSheets.length || 1
+  const centerIndex = (total - 1) / 2
+  const offset = index - centerIndex
+
+  const layerX = offset * 74
+  const rotateY = offset * -6
+  const zIndex = 30 - Math.abs(offset)
+
+  if (ratio === null) {
+    return {
+      '--cw-x': '0px',
+      '--cw-y': '0px',
+      '--cw-layer-x': `${layerX.toFixed(2)}px`,
+      '--cw-ry': `${rotateY.toFixed(2)}deg`,
+      zIndex,
+    } as CSSProperties
+  }
+
+  const center = (index + 0.5) / total
+  const delta = ratio - center
+  const x = -delta * 24
+  const lift = Math.max(0, 14 - Math.abs(delta) * 72)
+
+  return {
+    '--cw-x': `${x.toFixed(2)}px`,
+    '--cw-y': `${(-lift).toFixed(2)}px`,
+    '--cw-layer-x': `${layerX.toFixed(2)}px`,
+    '--cw-ry': `${rotateY.toFixed(2)}deg`,
+    zIndex,
+  } as CSSProperties
 }
 
 watch([activeCourseworkId, aiFeatureOpen], ([id, aiOpen]) => {
@@ -354,17 +426,20 @@ onBeforeUnmount(() => {
           </div>
         </article>
       </div>
-      <div class="coursework-grid coursework-grid-inline">
-        <button
-          v-for="item in courseworkItems"
-          :key="item.id"
-          type="button"
+      <div
+        ref="courseworkGridRef"
+        class="coursework-grid coursework-grid-inline"
+        @pointermove="handleCourseworkPointerMove"
+        @pointerleave="resetCourseworkPointer"
+      >
+        <article
+          v-for="(sheet, idx) in courseworkSheets"
+          :key="sheet.id"
           class="coursework-card"
-          @click="openCoursework(item.id)"
+          :style="courseworkCardStyle(idx)"
         >
-          <h4>{{ pick(item.title) }}</h4>
-          <p>{{ pick(item.summary) }}</p>
-        </button>
+          <img class="coursework-sheet-img" :src="sheet.image" :alt="sheet.alt" loading="lazy" />
+        </article>
       </div>
     </div>
 
@@ -393,11 +468,13 @@ onBeforeUnmount(() => {
       <span>{{ text.sections.about.skills }}</span>
     </h3>
     <div class="skills">
-      <article v-for="group in skillGroups" :key="group.title" class="info-card">
-        <h4>{{ group.title }}</h4>
-        <ul class="list">
-          <li v-for="item in group.items" :key="item">{{ item }}</li>
-        </ul>
+      <article v-for="group in skillGroups" :key="group.title" class="info-card skill-tag-card">
+        <h4 class="skill-tag-title">{{ group.title }}</h4>
+        <div class="skill-tag-list">
+          <template v-for="item in group.items" :key="item">
+            <span v-for="tag in splitSkillTags(item)" :key="`${item}-${tag}`" class="skill-tag-chip">{{ tag }}</span>
+          </template>
+        </div>
       </article>
     </div>
 
@@ -709,10 +786,65 @@ onBeforeUnmount(() => {
   margin: 0.5rem 0 1.25rem;
 }
 
+.skill-tag-card {
+  width: 100%;
+  min-height: 210px;
+  padding: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  border-radius: 15px;
+  border: 1px solid rgba(156, 135, 192, 0.65);
+  background: #c0afd5;
+  color: #554860;
+  box-shadow: -14px 14px 0 -5px #9c87c0;
+}
+
+.skill-tag-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.36rem;
+  line-height: 1.2;
+  font-weight: 900;
+  color: #4e4161;
+}
+
+.skill-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.45rem;
+}
+
+.skill-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.38rem 0.88rem 0.48rem 1.02rem;
+  border-radius: 999px;
+  background: #eb9646;
+  color: #fff;
+  font-size: 0.96rem;
+  line-height: 1.2;
+  position: relative;
+  transition: transform 0.28s ease, background-color 0.28s ease;
+}
+
+.skill-tag-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #554860;
+  margin-right: 0.48rem;
+  flex: 0 0 auto;
+}
+
 .coursework-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.9rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  overflow: visible;
 }
 
 .coursework-grid-inline {
@@ -722,29 +854,23 @@ onBeforeUnmount(() => {
 .coursework-card {
   border: 1px solid var(--section-card-border);
   border-radius: 14px;
-  padding: 0.95rem;
-  background: var(--color-background-soft);
-  color: var(--color-text);
-  text-align: left;
-  min-height: 140px;
-  cursor: pointer;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  padding: 0;
+  background: var(--color-background);
+  width: clamp(180px, 16vw, 230px);
+  height: clamp(250px, 21vw, 320px);
+  cursor: default;
+  transform: translate3d(calc(var(--cw-layer-x, 0px) + var(--cw-x, 0px)), var(--cw-y, 0px), 0) rotateY(var(--cw-ry, 0deg));
+  transition: transform 0.48s cubic-bezier(0.22, 0.82, 0.22, 1), box-shadow 0.3s ease;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  flex: 0 0 auto;
 }
 
-.coursework-card h4 {
-  margin: 0 0 0.45rem;
-  color: var(--color-heading);
-  font-size: 1rem;
-  line-height: 1.35;
-  font-family: var(--font-subtitle);
-}
-
-.coursework-card p {
-  margin: 0;
-  opacity: 0.9;
-  line-height: 1.5;
-  font-size: 0.92rem;
+.coursework-sheet-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .coursework-overlay {
@@ -866,18 +992,45 @@ onBeforeUnmount(() => {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
 }
 
+:root[data-theme='dark'] .skill-tag-card {
+  background: #8d7aa8;
+  color: #f6f2ff;
+  border-color: #b29fcb;
+  box-shadow: -14px 14px 0 -5px #5f4b7f;
+}
+
+:root[data-theme='dark'] .skill-tag-title {
+  color: #f6f2ff;
+}
+
+:root[data-theme='dark'] .skill-tag-chip {
+  background: #6f5a92;
+}
+
 @media (hover: hover) {
   .card:hover,
-  .info-card:hover,
-  .coursework-card:hover {
+  .info-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
   }
 
   :root[data-theme='dark'] .card:hover,
-  :root[data-theme='dark'] .info-card:hover,
-  :root[data-theme='dark'] .coursework-card:hover {
+  :root[data-theme='dark'] .info-card:hover {
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .coursework-card:hover {
+    transform: translate3d(calc(var(--cw-layer-x, 0px) + var(--cw-x, 0px)), calc(var(--cw-y, 0px) - 3px), 0) rotateY(var(--cw-ry, 0deg));
+    box-shadow: 0 18px 28px rgba(0, 0, 0, 0.14);
+  }
+
+  :root[data-theme='dark'] .coursework-card:hover {
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.46);
+  }
+
+  .skill-tag-chip:hover {
+    transform: scale(1.08);
+    background: #d9873a;
   }
 
   .internship-grid .card:hover .desc-block {
@@ -918,7 +1071,9 @@ onBeforeUnmount(() => {
   }
 
   .coursework-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
   }
 
   .project-feature-main {
@@ -976,9 +1131,14 @@ onBeforeUnmount(() => {
     padding: 1rem 1.1rem;
   }
 
+  .skill-tag-card {
+    min-height: 226px;
+    padding: 1rem;
+  }
+
   .coursework-card {
-    min-height: 150px;
-    padding: 1.05rem;
+    width: clamp(210px, 15vw, 250px);
+    height: clamp(290px, 20vw, 350px);
   }
 }
 
@@ -997,7 +1157,12 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .coursework-grid {
-    grid-template-columns: 1fr;
+    overflow-x: auto;
+  }
+
+  .coursework-card {
+    width: 185px;
+    height: 255px;
   }
 }
 
