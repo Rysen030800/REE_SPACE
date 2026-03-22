@@ -302,6 +302,66 @@ const courseworkSheetSections = computed(() => {
   const active = activeCourseworkSheet.value
   if (!active) return []
 
+  if (active.id === 'assignment-1') {
+    const imgBase = `${import.meta.env.BASE_URL}experience/assignments/1`
+    return [
+      {
+        id: 's1',
+        title: { zh: '1. 历史沿革与社会属性调研', en: '1. Historical Evolution and Social Attributes' },
+        description: {
+          zh: '历史维度：梳理自东晋、南北朝至民国时期的重要历史节点，确立古镇文化底蕴。\n社会学指标：通过问卷与流量统计，识别游客与居民比例（51%居民, 29%游客），并量化空间满意度及具体改进建议。\n行为分析：建立不同人群活动时间轴，识别空间使用的时段性特征。',
+          en: 'History: sorted key historical milestones from Eastern Jin and Southern-Northern Dynasties to the Republican era.\nSociological indicators: identified visitor/resident ratios (51% residents, 29% visitors) and quantified satisfaction and improvement demands.\nBehavior analysis: established activity timelines of different groups to detect time-based usage patterns.',
+        },
+        image: `${imgBase}/1.png`,
+      },
+      {
+        id: 's2',
+        title: { zh: '2. 公共空间演进逻辑与叙事', en: '2. Evolution Logic and Narrative of Public Space' },
+        description: {
+          zh: '演进阶段：将空间变迁划分为兴起、繁盛、衰弱、转型、升华五个阶段。\n分析维度：从叙事、空间组织、心理感受三个层面分析古镇格局变化，并提取宗族社会关系对建筑机理的影响。',
+          en: 'Phases: divided evolution into rise, prosperity, decline, transition, and upgrade.\nDimensions: analyzed narrative, spatial organization, and perception to trace morphology shifts and clan influence on architecture.',
+        },
+        image: `${imgBase}/2.png`,
+      },
+      {
+        id: 's3',
+        title: { zh: '3. 规划结构与用地类型现状', en: '3. Planning Structure and Land-Use Status' },
+        description: {
+          zh: '核心构成：识别“十字街”空间骨架与“流水休闲展示轴”。\n用地分析：对比功能结构、用地类型、交通结构及保护区规划，界定核心保护区、建设控制地带与环境协调区边界。',
+          en: 'Core structure: identified the “cross-street” spatial backbone and “waterfront leisure display axis”.\nLand-use analysis: compared function, land type, traffic, and conservation zoning to define boundaries of protection and control areas.',
+        },
+        image: `${imgBase}/3.png`,
+      },
+      {
+        id: 's4',
+        title: { zh: '4. 公共建筑空间类型学分析', en: '4. Typological Analysis of Public Building Spaces' },
+        description: {
+          zh: '空间关系：按与街巷的拓扑关系划分为相连型（祠堂、学校）、灰空间型（市场）、离散型（亭、廊）。\n拓扑图解：通过“枝干式”结构抽象图，量化线性空间、点状空间、院门前空间、公共空地与公共建筑分布密度。',
+          en: 'Spatial relations: classified as connected (ancestral halls/schools), gray-space (markets), and dispersed (pavilions/corridors).\nTopology: used a branch-like abstract model to quantify density of linear/point/courtyard-front/public-open/building spaces.',
+        },
+        image: [`${imgBase}/4.png`, `${imgBase}/5.png`],
+      },
+      {
+        id: 's5',
+        title: { zh: '5. 消极空间识别与功能定义', en: '5. Negative Space Identification and Function Definition' },
+        description: {
+          zh: '现状评估：识别大于20平方米的闲置空地、碎片化种植空间及无明确定义的消极空间。\n改造导向：根据邻里沟通、开放喘息、休憩等需求，界定场地潜在功能重塑方向。',
+          en: 'Assessment: identified idle plots over 20sqm, fragmented planting spaces, and undefined residual spaces.\nDirection: defined potential reprogramming toward social interaction, breathing/open space, and rest functions.',
+        },
+        image: `${imgBase}/6.png`,
+      },
+      {
+        id: 's6',
+        title: { zh: '6. SWOT-TOWS 战略决策矩阵', en: '6. SWOT-TOWS Strategic Matrix' },
+        description: {
+          zh: '内部因素：区位条件与历史资源（优势），建筑质量与设施不足（劣势）。\n外部因素：政策支持与文化旅游定位（机遇），开发冲击与环境破坏（挑战）。\n策略产出：形成SO（传承脉络）、WO（激活片区）、ST（挖掘底蕴）、WT（完善设施）四维行动逻辑。',
+          en: 'Internal factors: location and heritage resources (strengths), building quality and facility gaps (weaknesses).\nExternal factors: policy support and cultural-tourism positioning (opportunities), development pressure and environmental risks (threats).\nOutput: established SO/WO/ST/WT action logic.',
+        },
+        image: `${imgBase}/7.png`,
+      },
+    ]
+  }
+
   if (active.id === 'assignment-3') {
     const imgBase = `${import.meta.env.BASE_URL}experience/assignments/3`
     return [
@@ -347,6 +407,162 @@ const courseworkSheetSections = computed(() => {
         description: {
           zh: '分析模型：运用SWOT矩阵分析古村落保护与开发的优劣势。\n逻辑迁移：将传统智慧转化为“自然积存、自然渗透、自然净化”的现代设计准则。\n产出：确立“空间组织—理水系统—生态智慧”的跨学科知识迁移框架。',
           en: 'Used SWOT to evaluate protection and development and translated traditional wisdom into modern nature-based design principles.',
+        },
+        image: `${imgBase}/5.png`,
+      },
+    ]
+  }
+
+  if (active.id === 'assignment-4') {
+    const imgBase = `${import.meta.env.BASE_URL}experience/assignments/4`
+    return [
+      {
+        id: 's1',
+        title: { zh: '1. 现状多维诊断分析', en: '1. Multi-Dimensional Existing-Condition Diagnosis' },
+        description: {
+          zh: '痛点识别：硬质护岸造成的空间隔绝、采砂产业导致的地岸侵蚀、垃圾堆放引起的土壤/水体污染以及绿地斑块的人为破坏。\nSWTO综合评价：运用SWTO模型，将人类破坏、洪水泛滥等“问题”与政府、居民、游客等“受益者”建立逻辑关联，明确修复策略的目标优先级。',
+          en: 'Pain points: hard embankments, shoreline erosion from sand mining, soil/water contamination from dumping, and fragmentation of green patches.\nSWTO evaluation: linked “problems” (human disturbance, flood risk) with beneficiary groups to prioritize restoration actions.',
+        },
+        image: [`${imgBase}/1.png`, `${imgBase}/2.png`],
+      },
+      {
+        id: 's2',
+        title: { zh: '2. 生态修复体系与概念演进', en: '2. Ecological Restoration System and Concept Evolution' },
+        description: {
+          zh: '功能置入：依据鸟类栖息环境需求，模块化嵌入生态科普湿地、核心保育湿地与活力骑行道。\n物理修复流程：梳理土壤修复和湿地生境修复两大版块，搭建完整生态修复框架。',
+          en: 'Program insertion: modularly embedded educational wetlands, core conservation wetlands, and cycling routes based on bird-habitat demands.\nPhysical process: integrated soil remediation and wetland habitat restoration into a complete framework.',
+        },
+        image: `${imgBase}/3.png`,
+      },
+      {
+        id: 's3',
+        title: { zh: '3. 植被群落动态演替模拟', en: '3. Dynamic Succession Simulation of Vegetation Communities' },
+        description: {
+          zh: '空间分层：建立从泥滩一年生植物、低矮草本、多年生高草到常绿阔叶林的垂直结构。\n时间轴模拟：推演1年、4年、8年至20年的演替过程，展示人工干预引导系统从单一结构走向稳定复杂。\n传播机制：分析以鸟类、水流为媒介的种子扩散机理。',
+          en: 'Layered structure: built a vertical sequence from annual mudflat species to evergreen broadleaf communities.\nTimeline: simulated succession at year 1, 4, 8 to 20.\nDispersal: analyzed seed spread mechanisms via birds and water flow.',
+        },
+        image: `${imgBase}/4.png`,
+      },
+      {
+        id: 's4',
+        title: { zh: '4. 生态技术专项策略', en: '4. Specialized Ecological Technical Strategies' },
+        description: {
+          zh: '藤蔓装置策略（Park Vine Installation）：利用木桩与细线引导藤蔓生长，通过生物质逐步腐烂转化，实现攀援植物与群落自然融合。\n经济林修复策略：针对结构单一经济林，采用“挖沟壑、诱导漫水、削弱单一作物强势、吸引生物栖息”的步骤，提升生态平衡与韧性。',
+          en: 'Park Vine Installation: guided vine growth with stakes and lines to enable natural integration through gradual biomass transformation.\nEconomic-forest strategy: improved resilience through trenching, overflow induction, monoculture weakening, and habitat attraction.',
+        },
+        image: [`${imgBase}/5.png`, `${imgBase}/6.png`],
+      },
+    ]
+  }
+
+  if (active.id === 'assignment-2') {
+    const imgBase = `${import.meta.env.BASE_URL}experience/assignments/2`
+    return [
+      {
+        id: 's1',
+        title: { zh: '1. 全球与区域光污染现状分析', en: '1. Global and Regional Light-Pollution Analysis' },
+        description: {
+          zh: '宏观背景：统计全球暗夜质量变化，挖掘光污染以每年9.6%的速度增长及其对生物斑块破碎度的影响。\n区位识别：运用波特尔暗空监测法对贵州省龙里县进行定位，识别出场地具备二级天顶亮度（星河清晰，黄道光明显）的稀缺暗夜资源。',
+          en: 'Macro context: tracked global dark-sky quality shifts and annual light-pollution growth (9.6%).\nLocation reading: used Bortle dark-sky grading to identify Longli County as a rare level-2 zenith-brightness resource.',
+        },
+        image: [
+          `${imgBase}/${encodeURIComponent('1.全球光污染现状.jpg')}`,
+          `${imgBase}/${encodeURIComponent('2.区域光污染现状.jpg')}`,
+        ],
+      },
+      {
+        id: 's2',
+        title: { zh: '2. 场地矛盾解构与跨学科分析', en: '2. Conflict Deconstruction and Interdisciplinary Analysis' },
+        description: {
+          zh: '冲突识别：解构“过度照明—生态破坏—文化缺失”的场地矛盾链条。\n生物物理分析：量化夜间灯光对演替群落光合作用干扰及夜行性动物栖息环境的破坏。\n气候/物理：分析云类、月相、大气能见度及光谱折射率对暗夜质量的影响因子。\n文化基因提取：挖掘苗族“鼓藏节”天象观测传统与织锦图案中的空间宇宙观。',
+          en: 'Identified the conflict chain of over-lighting, ecological damage, and cultural absence, then combined biophysical, climate, and cultural analyses for cross-disciplinary diagnosis.',
+        },
+        image: [
+          `${imgBase}/${encodeURIComponent('3.场地现状分析.jpg')}`,
+          `${imgBase}/${encodeURIComponent('4.场地光污染影响分析.jpg')}`,
+        ],
+      },
+      {
+        id: 's3',
+        title: { zh: '3. 设计策略与系统框架', en: '3. Design Strategy and System Framework' },
+        description: {
+          zh: '核心框架：确立“识别黑暗质量—绘制黑暗基底—保护恢复—地域性赋能—有效性评估”的五步法策略。\n技术图谱：利用场地蓝绿基础设施建立“黑暗基底”，通过植被调控技术（Vegetation Regulation）构建物理层面的避光屏障。',
+          en: 'Built a five-step framework from dark-quality identification to effectiveness assessment, with blue-green infrastructure and vegetation regulation as key technical support.',
+        },
+        image: [
+          `${imgBase}/${encodeURIComponent('5.暗夜质量及设计思路.jpg')}`,
+          `${imgBase}/${encodeURIComponent('7.设计策略step1 2.jpg')}`,
+        ],
+      },
+      {
+        id: 's4',
+        title: { zh: '4. 智慧照明管理与技术防控', en: '4. Smart Lighting Management and Technical Control' },
+        description: {
+          zh: '分区管控：划分暗夜保护利用区、缓冲区与自然保护核心区，制定差异化照明标准。\n硬件交互：设计智慧照明控制系统，包含NB-IoT单灯控制器、感应调节机制及色温低于4000K的光源选型。\n用户端应用：建立基于APP的智慧照明联动，实现科普资讯与沉浸式暗夜体验的交互。',
+          en: 'Defined zoning-based lighting standards and integrated NB-IoT controllers, sensing, and low-CCT sources, with APP-side interaction for education and immersive experience.',
+        },
+        image: `${imgBase}/${encodeURIComponent('8.设计策略step3.jpg')}`,
+      },
+      {
+        id: 's5',
+        title: { zh: '5. 地域性赋能与场景实现', en: '5. Regional Empowerment and Scenario Realization' },
+        description: {
+          zh: '空间布局：规划文化体验、沉浸观星、自然露营等功能分区。\n元素提取：转化苗族织锦纹样为路灯结构件与地面铺装语言，实现地域化表达。\n视线控制：进行严格的视线投影分析与篝火替代灯光方案设计，确保景观体验不干扰暗夜环境。',
+          en: 'Planned cultural, stargazing, and camping scenarios; translated Miao weaving language into site elements; and controlled sightlines and substitute-lighting to preserve dark-sky quality.',
+        },
+        image: [
+          `${imgBase}/${encodeURIComponent('6.总平及设计分析.jpg')}`,
+          `${imgBase}/${encodeURIComponent('9.设计策略step4.jpg')}`,
+        ],
+      },
+    ]
+  }
+
+  if (active.id === 'assignment-5') {
+    const imgBase = `${import.meta.env.BASE_URL}experience/assignments/5`
+    return [
+      {
+        id: 's1',
+        title: { zh: '1. 人群画像与多维需求分析', en: '1. User Profiling and Multi-Dimensional Needs Analysis' },
+        description: {
+          zh: '客群构成：识别出僧人、管理人员、礼佛信众、周边居民及旅游游客五大核心群体。\n数据洞察：定量分析人群占比，识别出中老年客群在宗教民俗活动中的主体地位，以及年轻访客对宗教文化体验的潜在增长需求。\n需求映射：建立包含工作、居住、礼佛、餐饮、交流、体验在内的全维度需求环形图，指导功能空间的精准配置。',
+          en: 'Identified five core user groups and quantified demographic composition to map multidimensional needs for precise functional allocation.',
+        },
+        image: `${imgBase}/1.png`,
+      },
+      {
+        id: 's2',
+        title: { zh: '2. 地理环境承载力与容量测算', en: '2. Environmental Carrying Capacity and Capacity Estimation' },
+        description: {
+          zh: '技术路径：采用“游道测算法”与“面积测算法”对景区环境容量进行科学测算。\n测算指标：拟定游道合理长度（12m/人）及各类游憩区合理活动面积，并综合考量气候、季节等变量。\n量化产出：明确日环境容量为14,217人次，年环境容量为429.35万人次，为景区管理与规模控制提供硬性数据支撑。',
+          en: 'Used trail-length and area-based methods to calculate carrying capacity, yielding quantified daily and annual capacity for operation control.',
+        },
+        image: `${imgBase}/2.png`,
+      },
+      {
+        id: 's3',
+        title: { zh: '3. 景源分类评价与价值分级', en: '3. Scenic-Resource Evaluation and Value Grading' },
+        description: {
+          zh: '评价框架：将景区资源划分为自然资源与人文资源两大类。\n量化分值：对66个景源小类进行赋能评分，识别出宗教建筑（56分）、地石景观（32分）等特级及一级核心资源。\n结构分析：建立景源分级统计表，论证景区以地景资源为基础、宗教人文资源为核心的资源空间体系。',
+          en: 'Built a natural/cultural dual-category framework, scored 66 resource items, and identified tiered core resources.',
+        },
+        image: `${imgBase}/3.png`,
+      },
+      {
+        id: 's4',
+        title: { zh: '4. 场地SWOT战略矩阵分析', en: '4. Site SWOT Strategic Matrix Analysis' },
+        description: {
+          zh: '内部因素：优势（深厚佛教底蕴、特色建筑风格、良好市场前景）与劣势（基础设施欠缺、标识系统不全、信息化程度低）。\n外部因素：机遇（顺应福州国土空间规划、景区关注度提升）与威胁（生态与开发平衡压力、景观资源利用效率不高）。\n核心指向：在保护生态平衡前提下，通过完善配套与数字化建设提升资源效能。',
+          en: 'Assessed internal strengths/weaknesses and external opportunities/threats to define an ecology-first, infrastructure-plus-digitalization strategy.',
+        },
+        image: `${imgBase}/4.png`,
+      },
+      {
+        id: 's5',
+        title: { zh: '5. 差异化设计策略与导向系统', en: '5. Differentiated Design Strategy and Wayfinding System' },
+        description: {
+          zh: '行为流线设计：针对“传统朝拜者”与“年轻游访者”的行为差异，平衡“礼佛/祈福”与“购物/游赏”的功能矛盾。\n策略维度：需求导向（朝拜、娱乐、休闲、工作、交通），空间导向（混合、组团、寺庙与公共空间），发展导向（地貌观光、康体休闲与佛教衍生业态整合）。',
+          en: 'Balanced pilgrimage and tourism behavior through differentiated flows, then integrated demand, spatial, and development-oriented strategies.',
         },
         image: `${imgBase}/5.png`,
       },
@@ -400,6 +616,10 @@ function pickLocalizedTitle(value: { zh: string; en: string }) {
 
 function pickLocalizedDesc(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
+}
+
+function sectionImages(section: { image: string | string[] }) {
+  return Array.isArray(section.image) ? section.image : [section.image]
 }
 
 function handleCourseworkSheetScroll() {
@@ -622,13 +842,17 @@ onBeforeUnmount(() => {
             </section>
             <div class="sticky-sheet-spacer" />
           </div>
-          <div class="sticky-sheet-preview" :class="`bg-mode-${activeCourseworkSheetIndex % 3}`">
-            <img
-              class="coursework-sheet-modal-img"
-              :src="activeCourseworkSheetByIndex.image"
-              :alt="pickLocalizedTitle(activeCourseworkSheetByIndex.title)"
-              loading="lazy"
-            />
+          <div class="sticky-sheet-preview">
+            <div class="sticky-sheet-preview-inner">
+              <img
+                v-for="(imgSrc, imgIdx) in sectionImages(activeCourseworkSheetByIndex)"
+                :key="`${activeCourseworkSheetByIndex.id}-img-${imgIdx}`"
+                class="coursework-sheet-modal-img"
+                :src="imgSrc"
+                :alt="pickLocalizedTitle(activeCourseworkSheetByIndex.title)"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </article>
@@ -1029,6 +1253,11 @@ onBeforeUnmount(() => {
 
 .coursework-sheet-modal-body {
   max-height: min(78vh, 760px);
+  overflow: hidden !important;
+}
+
+.coursework-sheet-modal .coursework-modal-body {
+  overflow: hidden !important;
 }
 
 .sticky-sheet-modal {
@@ -1037,7 +1266,7 @@ onBeforeUnmount(() => {
 
 .sticky-sheet-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 460px;
   gap: 1.15rem;
   padding: 0.9rem;
 }
@@ -1077,35 +1306,34 @@ onBeforeUnmount(() => {
 }
 
 .sticky-sheet-preview {
-  position: sticky;
-  top: 0.35rem;
-  height: 20rem;
-  border-radius: 12px;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  padding: 0.55rem;
-  transition: background 0.35s ease, transform 0.35s ease;
+  position: relative;
+  top: 0;
+  height: 30rem;
+  width: 100%;
+  border-radius: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  padding: 0;
+  background: transparent;
+  transition: transform 0.35s ease;
 }
 
-.sticky-sheet-preview.bg-mode-0 {
-  background: linear-gradient(to bottom right, #06b6d4, #10b981);
-}
-
-.sticky-sheet-preview.bg-mode-1 {
-  background: linear-gradient(to bottom right, #ec4899, #6366f1);
-}
-
-.sticky-sheet-preview.bg-mode-2 {
-  background: linear-gradient(to bottom right, #f97316, #eab308);
+.sticky-sheet-preview-inner {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
 }
 
 .coursework-sheet-modal-img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
-  object-fit: cover;
-  border-radius: 10px;
+  object-fit: contain;
+  border-radius: 0;
 }
 
 .coursework-overlay {
@@ -1328,8 +1556,6 @@ onBeforeUnmount(() => {
   }
 
   .sticky-sheet-preview {
-    position: relative;
-    top: 0;
     height: 16.5rem;
   }
 }
@@ -1411,7 +1637,7 @@ onBeforeUnmount(() => {
   }
 
   .sticky-sheet-preview {
-    height: 14rem;
+    height: 18.5rem;
   }
 }
 
