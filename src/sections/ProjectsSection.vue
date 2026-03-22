@@ -233,26 +233,46 @@ const courseworkSheets = [
     id: 'assignment-1',
     filename: '古村落遗址调研 Survey of Ancient Village Sites.jpg',
     title: { zh: '古村落遗址调研', en: 'Survey of Ancient Village Sites' },
+    description: {
+      zh: '聚焦传统村落遗址的空间肌理、路径系统与活化策略。',
+      en: 'Focused on settlement morphology, path systems, and activation strategies.',
+    },
   },
   {
     id: 'assignment-2',
     filename: '暗夜观星园区规划 Dark Sky Observatory Park Master Plan.jpg',
     title: { zh: '暗夜观星园区规划', en: 'Dark Sky Observatory Park Master Plan' },
+    description: {
+      zh: '以暗夜保护为核心，整合观星活动、交通组织与游线体验。',
+      en: 'Integrated dark-sky protection with stargazing programs, access, and circulation.',
+    },
   },
   {
     id: 'assignment-3',
     filename: '古民居群落调研 Survey of TraditionalResidential Complexes.jpg',
     title: { zh: '古民居群落调研', en: 'Survey of Traditional Residential Complexes' },
+    description: {
+      zh: '围绕传统民居群落开展现状测绘、问题识别与更新建议。',
+      en: 'Included field mapping, issue diagnosis, and renewal recommendations.',
+    },
   },
   {
     id: 'assignment-4',
     filename: '生态滨水空间设计 Design of Ecological Waterfront Spaces.png',
     title: { zh: '生态滨水空间设计', en: 'Design of Ecological Waterfront Spaces' },
+    description: {
+      zh: '强调生态修复与公共活动复合，提升滨水空间连续性。',
+      en: 'Emphasized ecological restoration and mixed public activities.',
+    },
   },
   {
     id: 'assignment-5',
     filename: '风景区重规划 Revised Master Plan for the Scenic Area.jpg',
     title: { zh: '风景区重规划', en: 'Revised Master Plan for the Scenic Area' },
+    description: {
+      zh: '重构景区功能分区与运营路径，强化节点体验与导览系统。',
+      en: 'Reorganized program zoning, operation flow, and visitor wayfinding.',
+    },
   },
 ].map((sheet) => ({
   ...sheet,
@@ -262,6 +282,8 @@ const courseworkSheets = [
 const activeCourseworkId = ref<string | null>(null)
 const aiFeatureOpen = ref(false)
 const activeCourseworkSheetId = ref<string | null>(null)
+const activeCourseworkSheetIndex = ref(0)
+const courseworkSheetScrollRef = ref<HTMLElement | null>(null)
 
 const activeCoursework = computed(() =>
   courseworkItems.find((item) => item.id === activeCourseworkId.value) ?? null,
@@ -269,6 +291,7 @@ const activeCoursework = computed(() =>
 const activeCourseworkSheet = computed(() =>
   courseworkSheets.find((item) => item.id === activeCourseworkSheetId.value) ?? null,
 )
+const activeCourseworkSheetByIndex = computed(() => courseworkSheets[activeCourseworkSheetIndex.value] ?? courseworkSheets[0])
 
 let bodyOverflowBeforeModal = ''
 let bodyPaddingRightBeforeModal = ''
@@ -291,6 +314,8 @@ function closeAiFeature() {
 
 function openCourseworkSheet(id: string) {
   activeCourseworkSheetId.value = id
+  const idx = courseworkSheets.findIndex((sheet) => sheet.id === id)
+  activeCourseworkSheetIndex.value = idx >= 0 ? idx : 0
 }
 
 function closeCourseworkSheet() {
@@ -299,6 +324,24 @@ function closeCourseworkSheet() {
 
 function pickLocalizedTitle(value: { zh: string; en: string }) {
   return ui.lang === 'zh' ? value.zh : value.en
+}
+
+function pickLocalizedDesc(value: { zh: string; en: string }) {
+  return ui.lang === 'zh' ? value.zh : value.en
+}
+
+function handleCourseworkSheetScroll() {
+  const el = courseworkSheetScrollRef.value
+  if (!el) return
+  const max = Math.max(1, el.scrollHeight - el.clientHeight)
+  const progress = el.scrollTop / max
+  const breakpoints = courseworkSheets.map((_, index) => index / courseworkSheets.length)
+  const nextIndex = breakpoints.reduce((acc, point, index) => {
+    const currentDistance = Math.abs(progress - point)
+    const bestDistance = Math.abs(progress - breakpoints[acc])
+    return currentDistance < bestDistance ? index : acc
+  }, 0)
+  activeCourseworkSheetIndex.value = nextIndex
 }
 
 watch([activeCourseworkId, aiFeatureOpen, activeCourseworkSheetId], ([id, aiOpen, sheetId]) => {
@@ -486,13 +529,32 @@ onBeforeUnmount(() => {
       :aria-label="pickLocalizedTitle(activeCourseworkSheet.title)"
       @click.self="closeCourseworkSheet"
     >
-      <article class="coursework-modal coursework-sheet-modal">
+      <article class="coursework-modal coursework-sheet-modal sticky-sheet-modal">
         <header class="coursework-modal-head">
-          <h4>{{ pickLocalizedTitle(activeCourseworkSheet.title) }}</h4>
+          <h4>{{ ui.lang === 'zh' ? '课程图纸展示' : 'Coursework Sheet Showcase' }}</h4>
           <button type="button" class="coursework-close" @click="closeCourseworkSheet">×</button>
         </header>
-        <div class="coursework-modal-body coursework-sheet-modal-body">
-          <img class="coursework-sheet-modal-img" :src="activeCourseworkSheet.image" :alt="pickLocalizedTitle(activeCourseworkSheet.title)" loading="lazy" />
+        <div class="coursework-modal-body coursework-sheet-modal-body sticky-sheet-layout">
+          <div ref="courseworkSheetScrollRef" class="sticky-sheet-text-column" @scroll="handleCourseworkSheetScroll">
+            <section
+              v-for="(sheet, index) in courseworkSheets"
+              :key="`sheet-section-${sheet.id}`"
+              class="sticky-sheet-block"
+              :class="{ active: activeCourseworkSheetIndex === index }"
+            >
+              <h5>{{ pickLocalizedTitle(sheet.title) }}</h5>
+              <p>{{ pickLocalizedDesc(sheet.description) }}</p>
+            </section>
+            <div class="sticky-sheet-spacer" />
+          </div>
+          <div class="sticky-sheet-preview" :class="`bg-mode-${activeCourseworkSheetIndex % 3}`">
+            <img
+              class="coursework-sheet-modal-img"
+              :src="activeCourseworkSheetByIndex.image"
+              :alt="pickLocalizedTitle(activeCourseworkSheetByIndex.title)"
+              loading="lazy"
+            />
+          </div>
         </div>
       </article>
     </div>
@@ -603,6 +665,7 @@ onBeforeUnmount(() => {
 
 .project-feature-footer {
   margin-top: 0.55rem;
+  justify-content: flex-end;
 }
 
 .project-feature-main {
@@ -886,20 +949,88 @@ onBeforeUnmount(() => {
 }
 
 .coursework-sheet-modal {
-  width: min(980px, 95vw);
+  width: min(1120px, 96vw);
 }
 
 .coursework-sheet-modal-body {
-  max-height: min(76vh, 720px);
+  max-height: min(78vh, 760px);
+}
+
+.sticky-sheet-modal {
+  border-radius: 14px;
+}
+
+.sticky-sheet-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 1.15rem;
+  padding: 0.9rem;
+}
+
+.sticky-sheet-text-column {
+  height: 30rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.sticky-sheet-block {
+  margin: 0 0 3.2rem;
+  opacity: 0.34;
+  transition: opacity 0.3s ease;
+}
+
+.sticky-sheet-block.active {
+  opacity: 1;
+}
+
+.sticky-sheet-block h5 {
+  margin: 0 0 0.55rem;
+  color: var(--color-heading);
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.sticky-sheet-block p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 82%, transparent);
+  line-height: 1.6;
+  max-width: 34ch;
+}
+
+.sticky-sheet-spacer {
+  height: 7rem;
+}
+
+.sticky-sheet-preview {
+  position: sticky;
+  top: 0.35rem;
+  height: 20rem;
+  border-radius: 12px;
+  overflow: hidden;
   display: grid;
   place-items: center;
+  padding: 0.55rem;
+  transition: background 0.35s ease, transform 0.35s ease;
+}
+
+.sticky-sheet-preview.bg-mode-0 {
+  background: linear-gradient(to bottom right, #06b6d4, #10b981);
+}
+
+.sticky-sheet-preview.bg-mode-1 {
+  background: linear-gradient(to bottom right, #ec4899, #6366f1);
+}
+
+.sticky-sheet-preview.bg-mode-2 {
+  background: linear-gradient(to bottom right, #f97316, #eab308);
 }
 
 .coursework-sheet-modal-img {
-  width: min(920px, 100%);
-  height: auto;
+  width: 100%;
+  height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 .coursework-overlay {
@@ -1112,6 +1243,20 @@ onBeforeUnmount(() => {
     width: min(460px, 100%);
     flex-basis: auto;
   }
+
+  .sticky-sheet-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky-sheet-text-column {
+    height: 22rem;
+  }
+
+  .sticky-sheet-preview {
+    position: relative;
+    top: 0;
+    height: 16.5rem;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -1184,6 +1329,14 @@ onBeforeUnmount(() => {
 @media (max-width: 640px) {
   .coursework-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sticky-sheet-text-column {
+    height: 18.5rem;
+  }
+
+  .sticky-sheet-preview {
+    height: 14rem;
   }
 }
 
