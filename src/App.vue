@@ -36,7 +36,7 @@ function closeMobileMenu() {
   <div class="app-shell">
     <header class="site-header">
       <div class="header-top">
-        <RouterLink class="brand" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">我有闽厝 · REE_SPACE</RouterLink>
+        <RouterLink class="brand" :to="{ path: '/', hash: '#home' }" @click="closeMobileMenu">我有间厝 · REE_SPACE</RouterLink>
 
         <button
           class="nav-toggle"
@@ -253,13 +253,13 @@ function closeMobileMenu() {
 .nav {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.2rem;
   margin-left: auto;
 }
 
 .nav-links {
   display: flex;
-  gap: 0.75rem;
+  gap: clamp(1.2rem, 2.2vw, 2.6rem);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -267,9 +267,10 @@ function closeMobileMenu() {
 .nav-link {
   text-decoration: none;
   color: var(--nav-link);
-  padding: 0.25rem 0.1rem;
+  padding: 0.25rem 0.2rem;
   border-radius: 0;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  border-bottom: 0 !important;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
@@ -278,8 +279,8 @@ function closeMobileMenu() {
 
 .nav-link.router-link-exact-active {
   color: var(--nav-link-active);
-  border-bottom: 2px solid currentColor;
-  padding-bottom: 0.15rem;
+  border-bottom: 0 !important;
+  padding-bottom: 0.25rem;
 }
 
 .nav-controls {
@@ -586,4 +587,3 @@ function closeMobileMenu() {
   }
 }
 </style>
-

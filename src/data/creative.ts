@@ -94,15 +94,35 @@ export const illustrations: CreativeWork[] = [
   },
   {
     title: { zh: '绘画 02', en: 'Drawing 02' },
-    image: '/creative/illustration/d90b2454-6307-40b4-9dbf-37f9780d5429.png',
+    image: '/creative/illustration/13353753894013798.jpg',
   },
   {
     title: { zh: '绘画 03', en: 'Drawing 03' },
-    image: '/creative/illustration/watercolor 1.jpg',
+    image: '/creative/illustration/13353753932806814.jpg',
   },
   {
     title: { zh: '绘画 04', en: 'Drawing 04' },
+    image: '/creative/illustration/d90b2454-6307-40b4-9dbf-37f9780d5429.png',
+  },
+  {
+    title: { zh: '绘画 05', en: 'Drawing 05' },
+    image: '/creative/illustration/watercolor 1.jpg',
+  },
+  {
+    title: { zh: '绘画 06', en: 'Drawing 06' },
     image: '/creative/illustration/watercolor 2.jpg',
+  },
+  {
+    title: { zh: '绘画 07', en: 'Drawing 07' },
+    image: '/creative/illustration/微信图片_20240301155123.jpg',
+  },
+  {
+    title: { zh: '绘画 08', en: 'Drawing 08' },
+    image: '/creative/illustration/微信图片_20240301155130.jpg',
+  },
+  {
+    title: { zh: '绘画 09', en: 'Drawing 09' },
+    image: '/creative/illustration/微信图片_20240301155132.jpg',
   },
 ]
 

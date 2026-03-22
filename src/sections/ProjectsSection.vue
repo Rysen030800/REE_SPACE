@@ -56,11 +56,17 @@ function splitSkillTags(content: string) {
 const internshipGroupTitle = computed(() => (ui.lang === 'zh' ? '实习' : 'Internships'))
 
 const innovationGroupTitle = computed(() => (ui.lang === 'zh' ? '项目' : 'Projects'))
+const courseworkFrameTitle = computed(() =>
+  ui.lang === 'zh'
+    ? '城市与生境系统的逻辑解构与重塑'
+    : 'Logical Deconstruction and Reconstruction of Urban and Habitat Systems',
+)
 const aiPortfolioTitle = computed(() =>
   ui.lang === 'zh'
     ? 'AI 驱动开发：个人数字化作品集构建'
     : 'AI-Driven Development: Personal Digital Portfolio Construction',
 )
+const aiFeatureDate = computed(() => (ui.lang === 'zh' ? '2026.03-至今' : '2026.03-Present'))
 const aiFeatureSummary = computed(() =>
   ui.lang === 'zh'
     ? {
@@ -729,7 +735,7 @@ onBeforeUnmount(() => {
           <img class="project-feature-image" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
         </div>
         <div class="card-footer project-feature-footer">
-          <span class="date-chip">2026.03-至今</span>
+          <span class="date-chip">{{ aiFeatureDate }}</span>
         </div>
       </button>
       <div class="pair-grid innovation-grid">
@@ -749,16 +755,19 @@ onBeforeUnmount(() => {
           </div>
         </article>
       </div>
-      <div class="coursework-grid coursework-grid-inline">
-        <article
-          v-for="sheet in courseworkSheets"
-          :key="sheet.id"
-          class="coursework-card coursework-sheet-card"
-          @click="openCourseworkSheet(sheet.id)"
-        >
-          <img class="coursework-sheet-img" :src="sheet.image" :alt="pickLocalizedTitle(sheet.title)" loading="lazy" />
-          <p class="coursework-sheet-title">{{ pickLocalizedTitle(sheet.title) }}</p>
-        </article>
+      <div class="coursework-frame coursework-grid-inline">
+        <h3 class="title coursework-frame-title">{{ courseworkFrameTitle }}</h3>
+        <div class="coursework-grid">
+          <article
+            v-for="sheet in courseworkSheets"
+            :key="sheet.id"
+            class="coursework-card coursework-sheet-card"
+            @click="openCourseworkSheet(sheet.id)"
+          >
+            <img class="coursework-sheet-img" :src="sheet.image" :alt="pickLocalizedTitle(sheet.title)" loading="lazy" />
+            <p class="coursework-sheet-title">{{ pickLocalizedTitle(sheet.title) }}</p>
+          </article>
+        </div>
       </div>
     </div>
 
@@ -956,6 +965,8 @@ onBeforeUnmount(() => {
   text-align: left;
   cursor: pointer;
   padding: 0.95rem 1rem 1rem;
+  position: relative;
+  padding-bottom: 3rem;
 }
 
 .project-feature-line {
@@ -963,8 +974,11 @@ onBeforeUnmount(() => {
 }
 
 .project-feature-footer {
-  margin-top: 0.55rem;
+  margin-top: 0;
   justify-content: flex-end;
+  position: absolute;
+  right: 1rem;
+  bottom: 0.95rem;
 }
 
 .project-feature-main {
@@ -1213,6 +1227,19 @@ onBeforeUnmount(() => {
   margin-top: 0.95rem;
 }
 
+.coursework-frame {
+  border: 1px solid var(--section-card-border);
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem 1rem;
+  background: color-mix(in srgb, var(--color-background-soft) 94%, transparent);
+}
+
+.coursework-frame-title {
+  margin: 0 0 0.78rem;
+  text-align: left;
+  line-height: 1.34;
+}
+
 .coursework-card {
   border: 0;
   border-radius: 0;
@@ -1453,6 +1480,10 @@ onBeforeUnmount(() => {
 
 :root[data-theme='dark'] .coursework-card {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.34);
+}
+
+:root[data-theme='dark'] .coursework-frame {
+  background: color-mix(in srgb, var(--color-background-soft) 90%, transparent);
 }
 
 :root[data-theme='dark'] .skill-tag-card {
