@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import type { CSSProperties } from 'vue'
 import { projects } from '../data/projects'
 import { copy } from '../i18n'
 import { useUiStore } from '../stores/ui'
@@ -229,27 +228,46 @@ const courseworkItems: CourseworkItem[] = [
   },
 ]
 
-const courseworkSheetFiles = [
-  '古村落遗址调研 Survey of Ancient Village Sites.png',
-  '暗夜观星园区规划 Dark Sky Observatory Park Master Plan.jpg',
-  '生态滨水空间设计 Design of Ecological Waterfront Spaces 1.png',
-  '生态滨水空间设计 Design of Ecological Waterfront Spaces 2.png',
-  '风景区重规划 Revised Master Plan for the Scenic Area.png',
-] as const
-
-const courseworkSheets = courseworkSheetFiles.map((filename, index) => ({
-  id: `assignment-${index + 1}`,
-  image: `${import.meta.env.BASE_URL}experience/assignments/${encodeURIComponent(filename)}`,
-  alt: filename.replace(/\.[^.]+$/u, ''),
+const courseworkSheets = [
+  {
+    id: 'assignment-1',
+    filename: '古村落遗址调研 Survey of Ancient Village Sites.jpg',
+    title: { zh: '古村落遗址调研', en: 'Survey of Ancient Village Sites' },
+  },
+  {
+    id: 'assignment-2',
+    filename: '暗夜观星园区规划 Dark Sky Observatory Park Master Plan.jpg',
+    title: { zh: '暗夜观星园区规划', en: 'Dark Sky Observatory Park Master Plan' },
+  },
+  {
+    id: 'assignment-3',
+    filename: '古民居群落调研 Survey of TraditionalResidential Complexes.jpg',
+    title: { zh: '古民居群落调研', en: 'Survey of Traditional Residential Complexes' },
+  },
+  {
+    id: 'assignment-4',
+    filename: '生态滨水空间设计 Design of Ecological Waterfront Spaces.png',
+    title: { zh: '生态滨水空间设计', en: 'Design of Ecological Waterfront Spaces' },
+  },
+  {
+    id: 'assignment-5',
+    filename: '风景区重规划 Revised Master Plan for the Scenic Area.jpg',
+    title: { zh: '风景区重规划', en: 'Revised Master Plan for the Scenic Area' },
+  },
+].map((sheet) => ({
+  ...sheet,
+  image: `${import.meta.env.BASE_URL}experience/assignments/${encodeURIComponent(sheet.filename)}`,
 }))
 
 const activeCourseworkId = ref<string | null>(null)
 const aiFeatureOpen = ref(false)
-const courseworkGridRef = ref<HTMLElement | null>(null)
-const courseworkPointerRatio = ref<number | null>(null)
+const activeCourseworkSheetId = ref<string | null>(null)
 
 const activeCoursework = computed(() =>
   courseworkItems.find((item) => item.id === activeCourseworkId.value) ?? null,
+)
+const activeCourseworkSheet = computed(() =>
+  courseworkSheets.find((item) => item.id === activeCourseworkSheetId.value) ?? null,
 )
 
 let bodyOverflowBeforeModal = ''
@@ -271,58 +289,22 @@ function closeAiFeature() {
   aiFeatureOpen.value = false
 }
 
-function handleCourseworkPointerMove(event: PointerEvent) {
-  const grid = courseworkGridRef.value
-  if (!grid) return
-
-  const rect = grid.getBoundingClientRect()
-  if (rect.width <= 0) return
-  const raw = (event.clientX - rect.left) / rect.width
-  courseworkPointerRatio.value = Math.min(1, Math.max(0, raw))
+function openCourseworkSheet(id: string) {
+  activeCourseworkSheetId.value = id
 }
 
-function resetCourseworkPointer() {
-  courseworkPointerRatio.value = null
+function closeCourseworkSheet() {
+  activeCourseworkSheetId.value = null
 }
 
-function courseworkCardStyle(index: number): CSSProperties {
-  const ratio = courseworkPointerRatio.value
-  const total = courseworkSheets.length || 1
-  const centerIndex = (total - 1) / 2
-  const offset = index - centerIndex
-
-  const layerX = offset * 74
-  const rotateY = offset * -6
-  const zIndex = 30 - Math.abs(offset)
-
-  if (ratio === null) {
-    return {
-      '--cw-x': '0px',
-      '--cw-y': '0px',
-      '--cw-layer-x': `${layerX.toFixed(2)}px`,
-      '--cw-ry': `${rotateY.toFixed(2)}deg`,
-      zIndex,
-    } as CSSProperties
-  }
-
-  const center = (index + 0.5) / total
-  const delta = ratio - center
-  const x = -delta * 24
-  const lift = Math.max(0, 14 - Math.abs(delta) * 72)
-
-  return {
-    '--cw-x': `${x.toFixed(2)}px`,
-    '--cw-y': `${(-lift).toFixed(2)}px`,
-    '--cw-layer-x': `${layerX.toFixed(2)}px`,
-    '--cw-ry': `${rotateY.toFixed(2)}deg`,
-    zIndex,
-  } as CSSProperties
+function pickLocalizedTitle(value: { zh: string; en: string }) {
+  return ui.lang === 'zh' ? value.zh : value.en
 }
 
-watch([activeCourseworkId, aiFeatureOpen], ([id, aiOpen]) => {
+watch([activeCourseworkId, aiFeatureOpen, activeCourseworkSheetId], ([id, aiOpen, sheetId]) => {
   if (typeof document === 'undefined') return
 
-  if (id || aiOpen) {
+  if (id || aiOpen || sheetId) {
     bodyOverflowBeforeModal = document.body.style.overflow
     bodyPaddingRightBeforeModal = document.body.style.paddingRight
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
@@ -408,6 +390,9 @@ onBeforeUnmount(() => {
           </div>
           <img class="project-feature-image" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
         </div>
+        <div class="card-footer project-feature-footer">
+          <span class="date-chip">2026.03-至今</span>
+        </div>
       </button>
       <div class="pair-grid innovation-grid">
         <article v-for="p in innovation" :key="p.id" class="card">
@@ -426,19 +411,15 @@ onBeforeUnmount(() => {
           </div>
         </article>
       </div>
-      <div
-        ref="courseworkGridRef"
-        class="coursework-grid coursework-grid-inline"
-        @pointermove="handleCourseworkPointerMove"
-        @pointerleave="resetCourseworkPointer"
-      >
+      <div class="coursework-grid coursework-grid-inline">
         <article
-          v-for="(sheet, idx) in courseworkSheets"
+          v-for="sheet in courseworkSheets"
           :key="sheet.id"
-          class="coursework-card"
-          :style="courseworkCardStyle(idx)"
+          class="coursework-card coursework-sheet-card"
+          @click="openCourseworkSheet(sheet.id)"
         >
-          <img class="coursework-sheet-img" :src="sheet.image" :alt="sheet.alt" loading="lazy" />
+          <img class="coursework-sheet-img" :src="sheet.image" :alt="pickLocalizedTitle(sheet.title)" loading="lazy" />
+          <p class="coursework-sheet-title">{{ pickLocalizedTitle(sheet.title) }}</p>
         </article>
       </div>
     </div>
@@ -493,6 +474,25 @@ onBeforeUnmount(() => {
         </header>
         <div class="coursework-modal-body">
           <p>{{ pick(activeCoursework.detail) }}</p>
+        </div>
+      </article>
+    </div>
+
+    <div
+      v-if="activeCourseworkSheet"
+      class="coursework-overlay"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="pickLocalizedTitle(activeCourseworkSheet.title)"
+      @click.self="closeCourseworkSheet"
+    >
+      <article class="coursework-modal coursework-sheet-modal">
+        <header class="coursework-modal-head">
+          <h4>{{ pickLocalizedTitle(activeCourseworkSheet.title) }}</h4>
+          <button type="button" class="coursework-close" @click="closeCourseworkSheet">×</button>
+        </header>
+        <div class="coursework-modal-body coursework-sheet-modal-body">
+          <img class="coursework-sheet-modal-img" :src="activeCourseworkSheet.image" :alt="pickLocalizedTitle(activeCourseworkSheet.title)" loading="lazy" />
         </div>
       </article>
     </div>
@@ -599,6 +599,10 @@ onBeforeUnmount(() => {
 
 .project-feature-line {
   margin: 0.2rem 0 0;
+}
+
+.project-feature-footer {
+  margin-top: 0.55rem;
 }
 
 .project-feature-main {
@@ -838,13 +842,9 @@ onBeforeUnmount(() => {
 }
 
 .coursework-grid {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0;
-  perspective: 1200px;
-  transform-style: preserve-3d;
-  overflow: visible;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.95rem;
 }
 
 .coursework-grid-inline {
@@ -852,25 +852,54 @@ onBeforeUnmount(() => {
 }
 
 .coursework-card {
-  border: 1px solid var(--section-card-border);
-  border-radius: 14px;
+  border: 0;
+  border-radius: 0;
   padding: 0;
-  background: var(--color-background);
-  width: clamp(180px, 16vw, 230px);
-  height: clamp(250px, 21vw, 320px);
-  cursor: default;
-  transform: translate3d(calc(var(--cw-layer-x, 0px) + var(--cw-x, 0px)), var(--cw-y, 0px), 0) rotateY(var(--cw-ry, 0deg));
-  transition: transform 0.48s cubic-bezier(0.22, 0.82, 0.22, 1), box-shadow 0.3s ease;
+  background: transparent;
+  height: auto;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  flex: 0 0 auto;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .coursework-sheet-img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4 / 5;
+  height: auto;
   display: block;
   object-fit: cover;
+  border-radius: 0;
+}
+
+.coursework-sheet-title {
+  margin: 0.55rem 0 0;
+  text-align: center;
+  color: var(--color-heading);
+  font-size: 0.92rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.coursework-sheet-modal {
+  width: min(980px, 95vw);
+}
+
+.coursework-sheet-modal-body {
+  max-height: min(76vh, 720px);
+  display: grid;
+  place-items: center;
+}
+
+.coursework-sheet-modal-img {
+  width: min(920px, 100%);
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .coursework-overlay {
@@ -1020,8 +1049,8 @@ onBeforeUnmount(() => {
   }
 
   .coursework-card:hover {
-    transform: translate3d(calc(var(--cw-layer-x, 0px) + var(--cw-x, 0px)), calc(var(--cw-y, 0px) - 3px), 0) rotateY(var(--cw-ry, 0deg));
-    box-shadow: 0 18px 28px rgba(0, 0, 0, 0.14);
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.12);
   }
 
   :root[data-theme='dark'] .coursework-card:hover {
@@ -1071,9 +1100,7 @@ onBeforeUnmount(() => {
   }
 
   .coursework-grid {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 0.3rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .project-feature-main {
@@ -1137,8 +1164,7 @@ onBeforeUnmount(() => {
   }
 
   .coursework-card {
-    width: clamp(210px, 15vw, 250px);
-    height: clamp(290px, 20vw, 350px);
+    width: 100%;
   }
 }
 
@@ -1157,12 +1183,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .coursework-grid {
-    overflow-x: auto;
-  }
-
-  .coursework-card {
-    width: 185px;
-    height: 255px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
