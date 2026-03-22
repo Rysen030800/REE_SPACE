@@ -298,8 +298,72 @@ const activeCoursework = computed(() =>
 const activeCourseworkSheet = computed(() =>
   courseworkSheets.find((item) => item.id === activeCourseworkSheetId.value) ?? null,
 )
+const courseworkSheetSections = computed(() => {
+  const active = activeCourseworkSheet.value
+  if (!active) return []
+
+  if (active.id === 'assignment-3') {
+    const imgBase = `${import.meta.env.BASE_URL}experience/assignments/3`
+    return [
+      {
+        id: 's1',
+        title: { zh: '1. 社会背景与用户画像分析', en: '1. Social Context and User Profiling' },
+        description: {
+          zh: '核心数据：统计分析全村315户、1435人的基本数据。\n研究内容：识别出儿童及60岁以上老人占比高达76%的人口特征。\n逻辑关联：确定了聚落公共空间（如医疗所、石拱桥、党员之家）在理水系统影响下的安全权重与使用频率，为后续功能优化提供社会学基数。',
+          en: 'Core data: analyzed baseline data of 315 households and 1,435 residents. Identified a demographic structure where children and seniors over 60 account for 76%, defining safety weights and usage frequency of key public spaces under the water-management context.',
+        },
+        image: `${imgBase}/1.png`,
+      },
+      {
+        id: 's2',
+        title: { zh: '2. 上位规划与宏观区位定位', en: '2. Upper-Level Planning and Macro Positioning' },
+        description: {
+          zh: '研究内容：分析《龙岩市城市总体规划（2011-2030）》与《连城县培田村村庄规划（2013-2030）》。\n分析维度：明确培田村在区域交通枢纽及“三心、两轴、三片区”空间格局中的定位。\n专业体现：确保局部理水策略符合区域生态涵养规划。',
+          en: 'Mapped village positioning through regional plans and ensured local water-management strategy aligns with broader ecological planning.',
+        },
+        image: `${imgBase}/2.png`,
+      },
+      {
+        id: 's3',
+        title: { zh: '3. 空间格局成因与建筑形态分析', en: '3. Spatial Morphology and Architectural Form' },
+        description: {
+          zh: '分析对象：山水格局图、风水示意图、历史建筑分布图。\n技术路径：解析地形坡度、径流走向与聚落选址的内生关系。\n结论提取：论证“九厅十八井”建筑布局与外部水圳系统的衔接机制。',
+          en: 'Interpreted topography, runoff direction, and settlement siting relationships, and explained how architectural units connect to the wider water-canal network.',
+        },
+        image: `${imgBase}/3.png`,
+      },
+      {
+        id: 's4',
+        title: { zh: '4. 理水系统功能模块与物理流程', en: '4. Water-System Modules and Physical Process' },
+        description: {
+          zh: '系统架构：分解为“滞、渗、排、蓄、净、用”六项核心功能。\n技术机理：滞/渗（梯田与渗透铺装）、排/蓄（天井排水与池塘调节）、净/用（生态自净用于灌溉与消防）。\n核心价值：展示对复杂水循环系统的模块化处理能力。',
+          en: 'Decomposed the traditional water system into six modules: retain, infiltrate, drain, store, purify, and use.',
+        },
+        image: `${imgBase}/4.png`,
+      },
+      {
+        id: 's5',
+        title: { zh: '5. SWOT分析与现代应用转译', en: '5. SWOT and Modern Translation' },
+        description: {
+          zh: '分析模型：运用SWOT矩阵分析古村落保护与开发的优劣势。\n逻辑迁移：将传统智慧转化为“自然积存、自然渗透、自然净化”的现代设计准则。\n产出：确立“空间组织—理水系统—生态智慧”的跨学科知识迁移框架。',
+          en: 'Used SWOT to evaluate protection and development and translated traditional wisdom into modern nature-based design principles.',
+        },
+        image: `${imgBase}/5.png`,
+      },
+    ]
+  }
+
+  return [
+    {
+      id: `${active.id}-default`,
+      title: active.title,
+      description: active.description,
+      image: active.image,
+    },
+  ]
+})
 const activeCourseworkSheetByIndex = computed(
-  () => courseworkSheets[activeCourseworkSheetIndex.value] ?? courseworkSheets[0] ?? fallbackCourseworkSheet,
+  () => courseworkSheetSections.value[activeCourseworkSheetIndex.value] ?? courseworkSheetSections.value[0] ?? fallbackCourseworkSheet,
 )
 
 let bodyOverflowBeforeModal = ''
@@ -323,8 +387,7 @@ function closeAiFeature() {
 
 function openCourseworkSheet(id: string) {
   activeCourseworkSheetId.value = id
-  const idx = courseworkSheets.findIndex((sheet) => sheet.id === id)
-  activeCourseworkSheetIndex.value = idx >= 0 ? idx : 0
+  activeCourseworkSheetIndex.value = 0
 }
 
 function closeCourseworkSheet() {
@@ -342,10 +405,11 @@ function pickLocalizedDesc(value: { zh: string; en: string }) {
 function handleCourseworkSheetScroll() {
   const el = courseworkSheetScrollRef.value
   if (!el) return
-  if (courseworkSheets.length === 0) return
+  const sections = courseworkSheetSections.value
+  if (sections.length === 0) return
   const max = Math.max(1, el.scrollHeight - el.clientHeight)
   const progress = el.scrollTop / max
-  const breakpoints = courseworkSheets.map((_, index) => index / courseworkSheets.length)
+  const breakpoints = sections.map((_, index) => index / sections.length)
   if (breakpoints.length === 0) return
   const nextIndex = breakpoints.reduce((acc, point, index) => {
     const currentDistance = Math.abs(progress - point)
@@ -548,7 +612,7 @@ onBeforeUnmount(() => {
         <div class="coursework-modal-body coursework-sheet-modal-body sticky-sheet-layout">
           <div ref="courseworkSheetScrollRef" class="sticky-sheet-text-column" @scroll="handleCourseworkSheetScroll">
             <section
-              v-for="(sheet, index) in courseworkSheets"
+              v-for="(sheet, index) in courseworkSheetSections"
               :key="`sheet-section-${sheet.id}`"
               class="sticky-sheet-block"
               :class="{ active: activeCourseworkSheetIndex === index }"
