@@ -278,6 +278,13 @@ const courseworkSheets = [
   ...sheet,
   image: `${import.meta.env.BASE_URL}experience/assignments/${encodeURIComponent(sheet.filename)}`,
 }))
+const fallbackCourseworkSheet = {
+  id: 'assignment-fallback',
+  filename: '',
+  title: { zh: '', en: '' },
+  description: { zh: '', en: '' },
+  image: '',
+}
 
 const activeCourseworkId = ref<string | null>(null)
 const aiFeatureOpen = ref(false)
@@ -291,7 +298,9 @@ const activeCoursework = computed(() =>
 const activeCourseworkSheet = computed(() =>
   courseworkSheets.find((item) => item.id === activeCourseworkSheetId.value) ?? null,
 )
-const activeCourseworkSheetByIndex = computed(() => courseworkSheets[activeCourseworkSheetIndex.value] ?? courseworkSheets[0])
+const activeCourseworkSheetByIndex = computed(
+  () => courseworkSheets[activeCourseworkSheetIndex.value] ?? courseworkSheets[0] ?? fallbackCourseworkSheet,
+)
 
 let bodyOverflowBeforeModal = ''
 let bodyPaddingRightBeforeModal = ''
@@ -333,12 +342,14 @@ function pickLocalizedDesc(value: { zh: string; en: string }) {
 function handleCourseworkSheetScroll() {
   const el = courseworkSheetScrollRef.value
   if (!el) return
+  if (courseworkSheets.length === 0) return
   const max = Math.max(1, el.scrollHeight - el.clientHeight)
   const progress = el.scrollTop / max
   const breakpoints = courseworkSheets.map((_, index) => index / courseworkSheets.length)
+  if (breakpoints.length === 0) return
   const nextIndex = breakpoints.reduce((acc, point, index) => {
     const currentDistance = Math.abs(progress - point)
-    const bestDistance = Math.abs(progress - breakpoints[acc])
+    const bestDistance = Math.abs(progress - (breakpoints[acc] ?? breakpoints[0] ?? 0))
     return currentDistance < bestDistance ? index : acc
   }, 0)
   activeCourseworkSheetIndex.value = nextIndex
