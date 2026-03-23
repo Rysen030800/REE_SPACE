@@ -730,11 +730,11 @@ onBeforeUnmount(() => {
             <h3 class="title">{{ aiFeatureSummary.title }}</h3>
             <p class="desc project-feature-line">{{ aiFeatureSummary.role }}</p>
             <p class="desc project-feature-line">{{ aiFeatureSummary.stack }}</p>
-            <span class="project-feature-cta">{{ aiFeatureClickHint }}</span>
           </div>
           <img class="project-feature-image" :src="aiFeatureImage" alt="AI portfolio website preview" loading="lazy" />
         </div>
         <div class="card-footer project-feature-footer">
+          <span class="project-feature-cta">{{ aiFeatureClickHint }}</span>
           <span class="date-chip">{{ aiFeatureDate }}</span>
         </div>
       </button>
@@ -965,8 +965,6 @@ onBeforeUnmount(() => {
   text-align: left;
   cursor: pointer;
   padding: 0.95rem 1rem 1rem;
-  position: relative;
-  padding-bottom: 3rem;
 }
 
 .project-feature-line {
@@ -974,11 +972,11 @@ onBeforeUnmount(() => {
 }
 
 .project-feature-footer {
-  margin-top: 0;
-  justify-content: flex-end;
-  position: absolute;
-  right: 1rem;
-  bottom: 0.95rem;
+  margin-top: auto;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .project-feature-main {
@@ -996,8 +994,8 @@ onBeforeUnmount(() => {
 }
 
 .project-feature-cta {
-  margin-top: auto;
-  align-self: flex-start;
+  margin-top: 0;
+  flex: 0 0 auto;
   border: 1px solid var(--section-card-border);
   color: var(--section-card-border);
   border-radius: 999px;
@@ -1279,7 +1277,7 @@ onBeforeUnmount(() => {
 }
 
 .coursework-sheet-modal-body {
-  max-height: min(78vh, 760px);
+  max-height: min(88vh, 920px);
   overflow: hidden !important;
 }
 
@@ -1293,13 +1291,13 @@ onBeforeUnmount(() => {
 
 .sticky-sheet-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 460px;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 47%);
   gap: 1.15rem;
   padding: 0.9rem;
 }
 
 .sticky-sheet-text-column {
-  height: 30rem;
+  height: clamp(32rem, 68vh, 42rem);
   overflow-y: auto;
   padding-right: 0.25rem;
 }
@@ -1335,7 +1333,7 @@ onBeforeUnmount(() => {
 .sticky-sheet-preview {
   position: relative;
   top: 0;
-  height: 30rem;
+  height: clamp(32rem, 68vh, 42rem);
   width: 100%;
   border-radius: 0;
   overflow-y: auto;
@@ -1556,6 +1554,11 @@ onBeforeUnmount(() => {
     row-gap: 0.45rem;
   }
 
+  .project-feature-footer {
+    flex-wrap: nowrap;
+    row-gap: 0;
+  }
+
   .internship-main {
     margin-bottom: 0.55rem;
   }
@@ -1580,14 +1583,36 @@ onBeforeUnmount(() => {
 
   .sticky-sheet-layout {
     grid-template-columns: 1fr;
+    gap: 0.9rem;
   }
 
   .sticky-sheet-text-column {
-    height: 22rem;
+    order: 1;
+    height: clamp(14rem, 30vh, 18rem);
+    padding-right: 0;
   }
 
   .sticky-sheet-preview {
-    height: 16.5rem;
+    order: 2;
+    height: clamp(18rem, 44vh, 24rem);
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1080px) {
+  .sticky-sheet-layout {
+    grid-template-columns: 1fr;
+    gap: 0.95rem;
+  }
+
+  .sticky-sheet-text-column {
+    order: 1;
+    height: clamp(15rem, 32vh, 20rem);
+    padding-right: 0;
+  }
+
+  .sticky-sheet-preview {
+    order: 2;
+    height: clamp(19rem, 46vh, 26rem);
   }
 }
 
@@ -1659,16 +1684,40 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .skill-tag-card {
+    min-height: 0;
+    padding: 0.75rem;
+  }
+
+  .skill-tag-title {
+    font-size: 1.08rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .skill-tag-chip {
+    font-size: 0.84rem;
+    padding: 0.3rem 0.72rem 0.36rem 0.82rem;
+  }
+
   .coursework-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .sticky-sheet-layout {
+    gap: 0.75rem;
+  }
+
   .sticky-sheet-text-column {
-    height: 18.5rem;
+    height: clamp(12rem, 28vh, 15rem);
   }
 
   .sticky-sheet-preview {
-    height: 18.5rem;
+    height: clamp(16rem, 46vh, 23rem);
   }
 }
 

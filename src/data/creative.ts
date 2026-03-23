@@ -12,6 +12,15 @@ export type MusicAlbum = {
   image: string
 }
 
+function resolveCreativeImage(path: string) {
+  const normalized = path.replace(/^\/+/u, '')
+  const encoded = normalized
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')
+  return `${import.meta.env.BASE_URL}${encoded}`
+}
+
 export const photography: CreativeWork[] = [
   {
     title: { zh: '照片 01', en: 'Photo 01' },
@@ -85,7 +94,10 @@ export const photography: CreativeWork[] = [
     meta: { zh: '地点 · 2026', en: 'Location · 2026' },
     image: '/creative/photography/1765181242466.jpeg',
   },
-]
+].map((item) => ({
+  ...item,
+  image: item.image ? resolveCreativeImage(item.image) : item.image,
+}))
 
 export const illustrations: CreativeWork[] = [
   {
@@ -124,7 +136,10 @@ export const illustrations: CreativeWork[] = [
     title: { zh: '绘画 09', en: 'Drawing 09' },
     image: '/creative/illustration/微信图片_20240301155132.jpg',
   },
-]
+].map((item) => ({
+  ...item,
+  image: item.image ? resolveCreativeImage(item.image) : item.image,
+}))
 
 export const favorites = {
   music: [
